@@ -1,0 +1,23 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  streamlit_app:
+    build:
+      context: .
+      dockerfile: streamlit_app/Dockerfile
+    container_name: reef-streamlit
+    ports:
+      - "8501:8501"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_HOST=mongodb
+
+volumes:
+  mongo_data:

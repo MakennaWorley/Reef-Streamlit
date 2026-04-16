@@ -1,0 +1,25 @@
+# --- Frontend & UI ---
+streamlit
+streamlit-folium     # Highly recommended for displaying reef coordinates
+
+# --- Web Scraping & Automation ---
+selenium             # Required for the dynamic NOAA map
+webdriver-manager    # Keeps Chrome/Driver versions in sync in Docker
+requests             # For simple API calls (e.g., if you find a JSON endpoint)
+
+# --- Database & Storage ---
+pymongo              # NoSQL connectivity
+python-dotenv        # Securely loading DB credentials
+
+# --- Data Manipulation & Math ---
+pandas               # DataFrames for cleaning scraped data
+numpy                # Vectorized operations for stochastic models
+scipy                # Advanced signal processing and stats
+
+# --- Modeling & Machine Learning ---
+scikit-learn         # Probabilistic models (GMMs, Regression, etc.)
+statsmodels          # Formal statistical testing and time-series analysis
+
+# --- Visualization (Internal Analysis) ---
+matplotlib           # Base plotting engine
+seaborn              # High-level statistical charts for your report
