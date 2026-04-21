@@ -28,4 +28,11 @@ reef-env/
 venv/
 env/
 ENV/
+
+Python cache files
+*/__pycache__/
+*.pyc
+
+# Data files
 data/
+historical_data/

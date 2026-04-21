@@ -64,34 +64,37 @@ def update_station_locations_csv(new_stations: list, csv_path: str = None):
     Update _station_location.csv with new station data.
     
     Args:
-        new_stations: List of dictionaries with 'name', 'latitude', 'longitude'
+        new_stations: List of dictionaries with 'name', 'latitude', 'longitude', and optionally 'filename'
         csv_path: Path to _station_location.csv (defaults to data/ directory)
     """
     if csv_path is None:
-        csv_path = os.path.join(os.path.dirname(__file__), "..", "data", "_station_location.csv")
+        csv_path = os.path.join(os.path.dirname(__file__), "..", "historical_data", "_station_location.csv")
     
     try:
         # Read existing CSV
         if os.path.exists(csv_path):
             df = pd.read_csv(csv_path)
         else:
-            df = pd.DataFrame(columns=["Regional Virtual Station Name", "Marker Longitude", "Marker Latitude"])
+            df = pd.DataFrame(columns=["Station Name", "Longitude", "Latitude", "Filename"])
         
         # Add or update new stations
         for station in new_stations:
             # Check if station already exists (by name)
-            if station['name'] in df["Regional Virtual Station Name"].values:
+            if station['name'] in df["Station Name"].values:
                 # Update existing
-                idx = df[df["Regional Virtual Station Name"] == station['name']].index[0]
-                df.at[idx, "Marker Longitude"] = station['longitude']
-                df.at[idx, "Marker Latitude"] = station['latitude']
+                idx = df[df["Station Name"] == station['name']].index[0]
+                df.at[idx, "Longitude"] = station['longitude']
+                df.at[idx, "Latitude"] = station['latitude']
+                if 'filename' in station:
+                    df.at[idx, "Filename"] = station['filename']
                 print(f"  ✓ Updated: {station['name']}")
             else:
                 # Add new
                 new_row = pd.DataFrame([{
-                    "Regional Virtual Station Name": station['name'],
-                    "Marker Longitude": station['longitude'],
-                    "Marker Latitude": station['latitude']
+                    "Station Name": station['name'],
+                    "Longitude": station['longitude'],
+                    "Latitude": station['latitude'],
+                    "Filename": station.get('filename', '')
                 }])
                 df = pd.concat([df, new_row], ignore_index=True)
                 print(f"  ✓ Added: {station['name']}")
@@ -111,17 +114,21 @@ def reindex_station_locations(csv_path: str = None):
         csv_path: Path to station_location.csv (defaults to data/ directory)
     """
     if csv_path is None:
-        csv_path = os.path.join(os.path.dirname(__file__), "..", "data", "_station_location.csv")
+        csv_path = os.path.join(os.path.dirname(__file__), "..", "historical_data", "_station_location.csv")
     
     try:
         # Read CSV
         df = pd.read_csv(csv_path)
         
         # Remove any duplicate header rows
-        df = df[df["Regional Virtual Station Name"] != "Regional Virtual Station Name"]
+        df = df[df["Station Name"] != "Station Name"]
+        
+        # Ensure Filename column exists
+        if "Filename" not in df.columns:
+            df["Filename"] = ""
         
         # Sort by station name
-        df = df.sort_values("Regional Virtual Station Name").reset_index(drop=True)
+        df = df.sort_values("Station Name").reset_index(drop=True)
         
         # Save updated CSV
         df.to_csv(csv_path, index=False)
@@ -144,7 +151,7 @@ def txt_content_to_csv(txt_content: str, filename: str, output_dir: str = None) 
         Path to the converted CSV file
     """
     if output_dir is None:
-        output_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        output_dir = os.path.join(os.path.dirname(__file__), "..", "historical_data")
     
     os.makedirs(output_dir, exist_ok=True)
     
@@ -210,7 +217,7 @@ def scrape_and_download_station_data(url: str, output_dir: str = None, update_lo
         List of converted CSV file paths
     """
     if output_dir is None:
-        output_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        output_dir = os.path.join(os.path.dirname(__file__), "..", "historical_data")
     
     os.makedirs(output_dir, exist_ok=True)
     
@@ -258,6 +265,7 @@ def scrape_and_download_station_data(url: str, output_dir: str = None, update_lo
                     if update_locations:
                         metadata = extract_station_metadata(response.text)
                         if metadata:
+                            metadata['filename'] = filename
                             collected_stations.append(metadata)
                     
                     csv_file = txt_content_to_csv(response.text, filename, output_dir)
@@ -290,7 +298,7 @@ def scrape_multiple_stations(urls: list, output_dir: str = None, update_location
         List of all converted CSV file paths
     """
     if output_dir is None:
-        output_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        output_dir = os.path.join(os.path.dirname(__file__), "..", "historical_data")
     
     os.makedirs(output_dir, exist_ok=True)
     
@@ -341,6 +349,7 @@ def scrape_multiple_stations(urls: list, output_dir: str = None, update_location
                             if update_locations:
                                 metadata = extract_station_metadata(response.text)
                                 if metadata:
+                                    metadata['filename'] = filename
                                     collected_stations.append(metadata)
                             
                             csv_file = txt_content_to_csv(response.text, filename, output_dir)
@@ -365,21 +374,21 @@ def scrape_multiple_stations(urls: list, output_dir: str = None, update_location
 
 if __name__ == "__main__":
     # Step 1: Scrape and convert all station data from main page to CSV
-    # url = "https://coralreefwatch.noaa.gov/product/vs/data.php"
-    # scrape_and_download_station_data(url, update_locations=False)
+    url = "https://coralreefwatch.noaa.gov/product/vs/data.php"
+    scrape_and_download_station_data(url, update_locations=True)
     
     # Step 2: Scrape from specific station pages and convert to CSV
-    # station_urls = [
-    #     "/product/vs_single_pixel_exp/florida_keys.php",
-    #     "/product/vs_single_pixel_exp/fgb.php",
-    #     "/product/vs_single_pixel_exp/usvi.php",
-    #     "/product/vs_single_pixel_exp/puerto_rico.php",
-    #     "/product/vs_single_pixel_exp/samoas.php",
-    #     "/product/vs_single_pixel_exp/guam.php",
-    #     "/product/vs_single_pixel_exp/rota.php",
-    #     "/product/vs_single_pixel_exp/saipan_tinian_aguijan.php",
-    # ]
-    # scrape_multiple_stations(station_urls, update_locations=False)
+    station_urls = [
+        "/product/vs_single_pixel_exp/florida_keys.php",
+        "/product/vs_single_pixel_exp/fgb.php",
+        "/product/vs_single_pixel_exp/usvi.php",
+        "/product/vs_single_pixel_exp/puerto_rico.php",
+        "/product/vs_single_pixel_exp/samoas.php",
+        "/product/vs_single_pixel_exp/guam.php",
+        "/product/vs_single_pixel_exp/rota.php",
+        "/product/vs_single_pixel_exp/saipan_tinian_aguijan.php",
+    ]
+    scrape_multiple_stations(station_urls, update_locations=True)
 
     # Reindex stations alphabetically
     reindex_station_locations()
