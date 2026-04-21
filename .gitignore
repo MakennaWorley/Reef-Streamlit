@@ -22,3 +22,10 @@
 Thumbs.db
 
 .streamlit/
+
+# Python virtual environments
+reef-env/
+venv/
+env/
+ENV/
+data/

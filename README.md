@@ -13,6 +13,7 @@ This project scrapes real-time coral reef monitoring data from [NOAA Coral Reef 
 - **Web Interface**: Streamlit
 - **Visualization**: PyVista (3D geospatial visualization)
 - **Data Analysis**: Regular expressions for parsing, statistical analysis
+- **Data Presistence**: Uses a MongoDB to hold and store scrapped data long term
 
 ## Project Structure
 
@@ -20,6 +21,7 @@ This project scrapes real-time coral reef monitoring data from [NOAA Coral Reef 
 reef-streamlit/
 ├── data_scraper/          # Web scraping modules
 │   ├── scraper.py
+│   ├── historical_load.py
 │   └── utils.py
 ├── streamlit_app/         # Streamlit application
 │   ├── app.py
