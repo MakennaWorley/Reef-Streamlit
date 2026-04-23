@@ -36,3 +36,6 @@ Python cache files
 # Data files
 data/
 historical_data/
+
+# Other
+commands.txt
