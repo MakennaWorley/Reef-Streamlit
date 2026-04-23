@@ -23,3 +23,6 @@ statsmodels          # Formal statistical testing and time-series analysis
 # --- Visualization (Internal Analysis) ---
 matplotlib           # Base plotting engine
 seaborn              # High-level statistical charts for your report
+
+# --- CLI & Utilities ---
+tabulate             # Pretty-print tables for database queries
