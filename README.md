@@ -19,16 +19,24 @@ This project scrapes real-time coral reef monitoring data from [NOAA Coral Reef 
 
 ```
 reef-streamlit/
-├── data_scraper/          # Web scraping modules
+├── mongo/                                # MongoDB data management
+│   ├── db_utils.py                       # Database connection & utilities
+│   ├── load_historical_data.py           # One-time historical load
+│   ├── load_daily_data.py                # Daily incremental updates
+│   └── __init__.py
+├── data_scraper/                         # Web scraping modules
 │   ├── scraper.py
 │   ├── historical_loader.py
 │   └── utils.py
-├── streamlit_app/         # Streamlit application
+├── streamlit_app/                        # Streamlit application
 │   ├── app.py
 │   ├── pages/
 │   └── requirements.txt
-├── docker-compose.yml     # Container orchestration
-└── Project.ipynb          # Project planning and exploration
+├── historical_data/                      # CSV data files from NOAA
+│   ├── _station_location.csv             # Station metadata (name, lat/lon)
+│   └── *.csv                             # 363 station data files
+├── docker-compose.yml                    # MongoDB container orchestration
+└── Project.ipynb                         # Project planning and exploration
 ```
 
 ## Setup
@@ -83,3 +91,58 @@ The `_station_location.csv` includes:
 - **Longitude**: Station longitude coordinate
 - **Latitude**: Station latitude coordinate
 - **Filename**: Source txt file the station data came from
+
+## MongoDB Database Management
+
+Reef data is stored in MongoDB for long-term persistence and efficient querying. The `mongo/` module provides utilities for loading and managing this data.
+
+### Database Setup
+
+Start MongoDB using Docker:
+```bash
+docker-compose up -d mongodb
+```
+
+This creates a MongoDB instance at `mongodb://localhost:27017` with database name `reef_data`.
+
+### Loading Historical Data (One-Time Setup)
+
+Load all 363 CSV station files into MongoDB:
+```bash
+# Load all historical data
+python -m mongo.load_historical_data
+
+# Clear existing data and reload
+python -m mongo.load_historical_data --clear
+```
+
+This loads ~5.4M records across 363 coral reef monitoring stations worldwide. As of Apr 21, 2026
+
+### Daily Data Updates
+
+Set up incremental daily updates using the daily loader:
+```bash
+python -m mongo.load_daily_data
+```
+
+**Recommended cron job** (runs daily at 2 AM):
+```bash
+0 2 * * * cd /path/to/reef-streamlit && source reef-env/bin/activate && python -m mongo.load_daily_data
+```
+
+### Querying Data from Streamlit
+
+The `mongo.db_utils` module provides utilities for querying:
+```python
+from mongo.db_utils import get_all_stations, get_station_data, get_data_summary
+
+# Get database summary
+summary = get_data_summary()
+# Returns: {total_records, unique_stations, oldest_record, newest_record}
+
+# Get all station locations
+stations = get_all_stations()
+
+# Get measurements for a specific station
+data = get_station_data("Aruba, Curacao, and Bonaire")
+```
