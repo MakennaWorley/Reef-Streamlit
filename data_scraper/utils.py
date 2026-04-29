@@ -362,7 +362,9 @@ def scrape_and_download_station_data(url: str, output_dir: str = None, start_dat
 					response = requests.get(full_url)
 					response.raise_for_status()
 
-					csv_file, metadata = txt_content_to_csv(response.text, filename, output_dir, start_date=start_date, update_locations=update_locations)
+					csv_file, metadata = txt_content_to_csv(
+						response.text, filename, output_dir, start_date=start_date, update_locations=update_locations
+					)
 					if csv_file:
 						csv_files.append(csv_file)
 						if metadata:
@@ -437,7 +439,9 @@ def scrape_multiple_stations(urls: list, output_dir: str = None, start_date: dat
 							response = requests.get(file_url)
 							response.raise_for_status()
 
-							csv_file, metadata = txt_content_to_csv(response.text, filename, output_dir, start_date=start_date, update_locations=update_locations)
+							csv_file, metadata = txt_content_to_csv(
+								response.text, filename, output_dir, start_date=start_date, update_locations=update_locations
+							)
 							if csv_file:
 								all_csv_files.append(csv_file)
 								if metadata:

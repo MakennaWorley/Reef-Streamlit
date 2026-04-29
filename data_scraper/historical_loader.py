@@ -1,16 +1,11 @@
 import os
 
-from utils import (
-	reindex_station_locations,
-	scrape_and_download_station_data,
-	scrape_multiple_stations,
-	update_station_locations_csv,
-)
+from utils import reindex_station_locations, scrape_and_download_station_data, scrape_multiple_stations, update_station_locations_csv
 
 if __name__ == '__main__':
 	# Use absolute path for historical_data directory
 	historical_data_dir = os.path.join(os.path.dirname(__file__), '..', 'historical_data')
-	
+
 	# Step 1: Scrape and convert all station data from main page to CSV
 	url = 'https://coralreefwatch.noaa.gov/product/vs/data.php'
 	csv_files, stations = scrape_and_download_station_data(url, output_dir=historical_data_dir, update_locations=True)
@@ -38,5 +33,5 @@ if __name__ == '__main__':
 
 	# Reindex stations alphabetically
 	reindex_station_locations()
-	
+
 	print(f'\n✓ Historical load complete. Files saved to: {historical_data_dir}')

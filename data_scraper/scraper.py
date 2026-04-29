@@ -19,7 +19,7 @@ if __name__ == '__main__':
 			sys.exit(1)
 
 	# Use absolute path for .temp_data directory
-	temp_data_dir = os.path.join(os.path.dirname(__file__), '.temp_data')
+	temp_data_dir = os.path.join(os.path.dirname(__file__), '..', '.temp_data')
 
 	# Scrape main page table
 	url = 'https://coralreefwatch.noaa.gov/product/vs/data.php'
