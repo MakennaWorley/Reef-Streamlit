@@ -34,7 +34,7 @@ Python cache files
 *.pyc
 
 # Data files
-data/
+.temp_data/
 historical_data/
 
 # Other

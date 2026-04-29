@@ -92,6 +92,11 @@ The `_station_location.csv` includes:
 - **Latitude**: Station latitude coordinate
 - **Filename**: Source txt file the station data came from
 
+**Usage:**
+```bash
+python data_scraper/historical_loader.py
+```
+
 ## MongoDB Database Management
 
 Reef data is stored in MongoDB for long-term persistence and efficient querying. The `mongo/` module provides utilities for loading and managing this data.
