@@ -7,9 +7,17 @@ import streamlit as st
 
 st.set_page_config(page_title='Reef Data', layout='wide')
 
-# Background scheduler moved to standalone script: run_daily_loader.py
-# This ensures data loads even when Streamlit is not running
-# See DAILY_LOADER_SETUP.md for setup instructions
+# Initialize midnight data loader scheduler
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+if 'scheduler_started' not in st.session_state:
+	try:
+		from mongo.midnight_scheduler import start_scheduler
+		start_scheduler()
+		st.session_state.scheduler_started = True
+	except Exception as e:
+		print(f'⚠ Could not start scheduler: {e}')
+		st.session_state.scheduler_started = False
 
 st.title('🪸 Reef Streamlit App')
 
