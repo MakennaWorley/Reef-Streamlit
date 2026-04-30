@@ -20,7 +20,7 @@ You should see `mongodb` with status `Up`.
 From the project root directory:
 ```bash
 source reef-env/bin/activate      # Activate virtual environment
-python data_scraper/load_historical_data.py  # Load all CSV data
+python mongo/load_historical_data.py  # Load all CSV data
 ```
 
 You should see output like:
@@ -55,9 +55,7 @@ Date range: 1990-01-01 to 2024-12-31
 
 ## What Was Created
 
-I created three files for you:
-
-### 1. `data_scraper/db_utils.py` - MongoDB Connection Utilities
+### 1. `mongo/db_utils.py` - MongoDB Connection Utilities
 Functions to connect to MongoDB and query data:
 - `get_mongo_client()` - Connect to MongoDB
 - `get_collection()` - Get the measurements collection
@@ -66,19 +64,19 @@ Functions to connect to MongoDB and query data:
 - `get_station_data(station_name)` - Get data for a specific station
 - `get_data_summary()` - Get statistics about your data
 
-### 2. `data_scraper/load_historical_data.py` - Data Loader Script
+### 2. `mongo/load_historical_data.py` - Data Loader Script
 Reads all CSV files from `historical_data/` and loads them into MongoDB.
 
 Usage:
 ```bash
 # Load all data
-python data_scraper/load_historical_data.py
+python mongo/load_historical_data.py
 
 # Clear existing data and reload
-python data_scraper/load_historical_data.py --clear
+python mongo/load_historical_data.py --clear
 
 # Load from custom directory
-python data_scraper/load_historical_data.py --directory /path/to/csvs
+python mongo/load_historical_data.py --directory /path/to/csvs
 ```
 
 ---
@@ -250,7 +248,7 @@ head historical_data/abc_islands.csv
 ### Want to reload data?
 Clear and reload:
 ```bash
-python data_scraper/load_historical_data.py --clear
+python mongo/load_historical_data.py --clear
 ```
 
 This will delete all existing data and reload from CSVs.

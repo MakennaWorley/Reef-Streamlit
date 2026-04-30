@@ -7,6 +7,10 @@ import streamlit as st
 
 st.set_page_config(page_title='Reef Data', layout='wide')
 
+# Background scheduler moved to standalone script: run_daily_loader.py
+# This ensures data loads even when Streamlit is not running
+# See DAILY_LOADER_SETUP.md for setup instructions
+
 st.title('🪸 Reef Streamlit App')
 
 # Navigation

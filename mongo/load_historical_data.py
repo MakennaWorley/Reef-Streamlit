@@ -23,10 +23,14 @@ Use this ONCE when setting up your database for the first time.
 import argparse
 import glob
 import os
+import sys
 
 import pandas as pd
 
-from .db_utils import clear_collection, clear_stations, create_indexes, get_data_summary, insert_records, insert_stations
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from mongo.db_utils import clear_collection, clear_stations, create_indexes, get_data_summary, insert_records, insert_stations
 
 
 def get_csv_files(directory=None):
@@ -109,18 +113,14 @@ def load_csv_to_records(csv_file, station_metadata):
 		# Get station info
 		station_info = station_metadata.get(filename_key, {})
 		station_name = station_info.get('station_name', filename_key)
-		longitude = station_info.get('longitude', None)
-		latitude = station_info.get('latitude', None)
 
 		# Convert each row to a dictionary and add station info
 		records = []
 		for _, row in df.iterrows():
 			record = row.to_dict()
 
-			# Add station metadata
+			# Add station name only (longitude/latitude stored separately in stations collection)
 			record['station_name'] = station_name
-			record['longitude'] = longitude
-			record['latitude'] = latitude
 
 			# Convert date columns to integers
 			if 'YYYY' in record:
@@ -135,7 +135,7 @@ def load_csv_to_records(csv_file, station_metadata):
 
 			# Convert numeric columns (skip non-numeric)
 			for key, value in record.items():
-				if key not in ['station_name', 'longitude', 'latitude', 'year', 'month', 'day']:
+				if key not in ['station_name', 'year', 'month', 'day']:
 					try:
 						# Try to convert to float
 						if pd.notna(value) and value != '':

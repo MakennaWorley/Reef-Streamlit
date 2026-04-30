@@ -79,7 +79,7 @@ def clear_collection(collection_name=COLLECTION_NAME):
 
 def create_indexes():
 	"""
-	Create indexes for faster queries.
+	Create indexes for faster queries and prevent duplicates.
 	"""
 	collection = get_collection()
 
@@ -91,29 +91,49 @@ def create_indexes():
 	collection.create_index([('year', 1), ('month', 1), ('day', 1)])
 	print('✓ Created index on date fields')
 
+	# Unique index on station_name + date to prevent duplicate measurements
+	collection.create_index([('station_name', 1), ('year', 1), ('month', 1), ('day', 1)], unique=True, sparse=True, name='unique_station_date')
+	print('✓ Created unique index on (station_name, year, month, day) to prevent duplicates')
+
 	# Index on stations collection
 	stations = get_collection(STATIONS_COLLECTION)
 	stations.create_index('station_name', unique=True)
-	print("✓ Created index on 'station_name' in stations collection")
+	print("✓ Created unique index on 'station_name' in stations collection")
 
 
 def insert_records(records, collection_name=COLLECTION_NAME):
 	"""
-	Insert multiple records into the collection.
+	Insert or update multiple records into the collection.
+	Uses upsert logic to prevent duplicates - if a record with the same
+	station_name + date already exists, it will be replaced with the new data.
 
 	Args:
 	    records: List of dictionaries to insert
 	    collection_name: Name of the collection
 
 	Returns:
-	    int: Number of inserted records
+	    int: Number of records processed (inserted or updated)
 	"""
 	if not records:
 		return 0
 
 	collection = get_collection(collection_name)
-	result = collection.insert_many(records)
-	return len(result.inserted_ids)
+	count = 0
+
+	for record in records:
+		# Use station_name + date as the unique identifier
+		filter_query = {
+			'station_name': record.get('station_name'),
+			'year': record.get('year'),
+			'month': record.get('month'),
+			'day': record.get('day'),
+		}
+
+		# Replace the entire document if it exists, insert if it doesn't
+		collection.replace_one(filter_query, record, upsert=True)
+		count += 1
+
+	return count
 
 
 def insert_stations(station_records):
@@ -145,13 +165,22 @@ def clear_stations():
 
 def get_all_stations():
 	"""
-	Get list of all stations with their location data.
+	Get list of all stations with their location data and measurement count.
 
 	Returns:
-	    list: List of station documents with name, longitude, latitude
+	    list: List of station documents with name, longitude, latitude, and datapoint_count
 	"""
-	stations = get_collection(STATIONS_COLLECTION)
-	return list(stations.find().sort('station_name', 1))
+	stations_collection = get_collection(STATIONS_COLLECTION)
+	measurements_collection = get_collection(COLLECTION_NAME)
+
+	stations = list(stations_collection.find().sort('station_name', 1))
+
+	# Add datapoint count for each station
+	for station in stations:
+		count = measurements_collection.count_documents({'station_name': station.get('station_name')})
+		station['datapoint_count'] = count
+
+	return stations
 
 
 def get_station_data(station_name):
@@ -171,6 +200,7 @@ def get_station_data(station_name):
 def get_data_summary():
 	"""
 	Get summary statistics about the data in the database.
+	Uses aggregation with sorting to reliably find the absolute oldest and newest dates.
 
 	Returns:
 	    dict: Summary including total records, stations, date range
@@ -182,17 +212,33 @@ def get_data_summary():
 	stations_collection = get_collection(STATIONS_COLLECTION)
 	unique_stations = stations_collection.count_documents({})
 
-	# Get date range - look for records with all date fields
-	oldest = collection.find_one(
-		{'year': {'$exists': True}, 'month': {'$exists': True}, 'day': {'$exists': True}}, sort=[('year', 1), ('month', 1), ('day', 1)]
-	)
-	newest = collection.find_one(
-		{'year': {'$exists': True}, 'month': {'$exists': True}, 'day': {'$exists': True}}, sort=[('year', -1), ('month', -1), ('day', -1)]
-	)
+	# Get oldest record by sorting
+	pipeline_oldest = [
+		{'$match': {'year': {'$exists': True}, 'month': {'$exists': True}, 'day': {'$exists': True}}},
+		{'$sort': {'year': 1, 'month': 1, 'day': 1}},
+		{'$limit': 1},
+	]
 
-	return {
-		'total_records': total_records,
-		'unique_stations': unique_stations,
-		'oldest_record': f'{oldest["year"]}-{oldest["month"]:02d}-{oldest["day"]:02d}' if oldest else 'N/A',
-		'newest_record': f'{newest["year"]}-{newest["month"]:02d}-{newest["day"]:02d}' if newest else 'N/A',
-	}
+	# Get newest record by sorting
+	pipeline_newest = [
+		{'$match': {'year': {'$exists': True}, 'month': {'$exists': True}, 'day': {'$exists': True}}},
+		{'$sort': {'year': -1, 'month': -1, 'day': -1}},
+		{'$limit': 1},
+	]
+
+	oldest_result = list(collection.aggregate(pipeline_oldest))
+	newest_result = list(collection.aggregate(pipeline_newest))
+
+	if oldest_result:
+		oldest = oldest_result[0]
+		oldest_str = f'{oldest["year"]}-{oldest["month"]:02d}-{oldest["day"]:02d}'
+	else:
+		oldest_str = 'N/A'
+
+	if newest_result:
+		newest = newest_result[0]
+		newest_str = f'{newest["year"]}-{newest["month"]:02d}-{newest["day"]:02d}'
+	else:
+		newest_str = 'N/A'
+
+	return {'total_records': total_records, 'unique_stations': unique_stations, 'oldest_record': oldest_str, 'newest_record': newest_str}

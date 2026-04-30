@@ -31,9 +31,16 @@ def print_stations():
 	# Prepare table data
 	table_data = []
 	for station in stations:
-		table_data.append([station.get('station_name', 'Unknown'), station.get('latitude', 'N/A'), station.get('longitude', 'N/A')])
+		table_data.append(
+			[
+				station.get('station_name', 'Unknown'),
+				station.get('latitude', 'N/A'),
+				station.get('longitude', 'N/A'),
+				station.get('datapoint_count', 0),
+			]
+		)
 
-	print(tabulate(table_data, headers=['Station Name', 'Latitude', 'Longitude'], tablefmt='grid'))
+	print(tabulate(table_data, headers=['Station Name', 'Latitude', 'Longitude', 'Datapoints'], tablefmt='grid'))
 	print(f'\nTotal: {len(stations)} station(s)\n')
 
 

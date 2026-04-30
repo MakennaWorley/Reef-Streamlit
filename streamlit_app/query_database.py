@@ -48,6 +48,14 @@ try:
 			if '_id' in stations_df.columns:
 				stations_df = stations_df.drop('_id', axis=1)
 
+			# Reorder columns for better readability
+			if 'station_name' in stations_df.columns:
+				cols = ['station_name', 'latitude', 'longitude', 'datapoint_count']
+				stations_df = stations_df[[col for col in cols if col in stations_df.columns]]
+				stations_df = stations_df.rename(
+					columns={'station_name': 'Station Name', 'latitude': 'Latitude', 'longitude': 'Longitude', 'datapoint_count': 'Datapoints'}
+				)
+
 			st.dataframe(stations_df, use_container_width=True, hide_index=True)
 
 			st.info(f'Total: {len(stations)} station(s)')
@@ -60,8 +68,14 @@ try:
 		# Get list of stations
 		stations = get_all_stations()
 		if stations:
-			station_names = sorted([s.get('station_name', 'Unknown') for s in stations])
-			selected_station = st.selectbox('Select a Station', station_names)
+			# Create station options with datapoint counts
+			station_options = sorted(
+				[f"{s.get('station_name', 'Unknown')} ({s.get('datapoint_count', 0):,} datapoints)" for s in stations]
+			)
+			selected_station_display = st.selectbox('Select a Station', station_options)
+
+			# Extract station name from display (remove datapoint count)
+			selected_station = selected_station_display.split(' (')[0]
 
 			if st.button('Load Station Data'):
 				with st.spinner(f'Loading data for {selected_station}...'):

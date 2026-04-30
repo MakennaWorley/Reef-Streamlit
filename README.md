@@ -19,15 +19,15 @@ This project scrapes real-time coral reef monitoring data from [NOAA Coral Reef 
 
 ```
 reef-streamlit/
+├── data_scraper/                         # Web scraping modules
+│   ├── scraper.py
+│   ├── historical_loader.py
+│   └── utils.py
 ├── mongo/                                # MongoDB data management
 │   ├── db_utils.py                       # Database connection & utilities
 │   ├── load_historical_data.py           # One-time historical load
 │   ├── load_daily_data.py                # Daily incremental updates
 │   └── __init__.py
-├── data_scraper/                         # Web scraping modules
-│   ├── scraper.py
-│   ├── historical_loader.py
-│   └── utils.py
 ├── streamlit_app/                        # Streamlit application
 │   ├── app.py
 │   ├── pages/
@@ -94,7 +94,7 @@ The `_station_location.csv` includes:
 
 **Usage:**
 ```bash
-python data_scraper/historical_loader.py
+python mongo/historical_loader.py
 ```
 
 ## MongoDB Database Management
