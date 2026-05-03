@@ -1,0 +1,364 @@
+station_name,ocean,region,subregion,filename
+28 Fathom Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_28FathomBank.txt
+"Abrolhos Reefs, Brazil",Atlantic,Brazil,,abrolhos_reefs.txt
+Achang,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Achang.txt
+Achu Dangkulu,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_AchuDangkulu.txt
+"Aden, Yemen",Indian,Middle East,,aden.txt
+Aguadilla,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Aguadilla.txt
+Ague Bay,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_AgueBay.txt
+Akino Reef,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_AkinoReef.txt
+Al Madinah and Makkah,Indian,Middle East,,madinah_makkah.txt
+"Al Wusta, Oman",Indian,Middle East,,al_wusta.txt
+Alaguan Bay,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_AlaguanBay.txt
+Alderdice Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_AlderdiceBank.txt
+Anao,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Anao.txt
+"Andaman, India",Pacific,Southeast Asia,,andaman.txt
+Arecibo,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Arecibo.txt
+"Aruba, Curacao, and Bonaire",Atlantic,Caribbean,,abc_islands.txt
+As Motmos,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_AsMotmos.txt
+Asiga Point,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_AsigaPoint.txt
+Aunu'u East,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_AunuuEast.txt
+Aunu'u West,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_AunuuWest.txt
+Austral Islands,Pacific,Polynesia,,austral_islands.txt
+Bahrain,Indian,Middle East,,bahrain.txt
+Bangka-Belitung Islands,Pacific,Southeast Asia,,bangka_belitung.txt
+Barangka,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Barangka.txt
+"Bassas da India, France",Indian,Western Indian Ocean,,bassas_da_india.txt
+Beagle Gulf,Pacific,Australia,,beagle_gulf.txt
+Belize,Atlantic,Caribbean,,belize.txt
+Bermuda,Atlantic,Other Atlantic,,bermuda.txt
+Bouma Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_BoumaBank.txt
+Bright Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_BrightBank.txt
+Broward Cluster,Atlantic,Florida,SoutheastFlorida,AtlanticOcean_Florida_SoutheastFlorida_BrowardCluster.txt
+Brunei Darussalam,Pacific,Southeast Asia,,brunei_darussalam.txt
+"Buzios, Brazil",Atlantic,Brazil,,buzios.txt
+Cabo Rojo,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_CaboRojo.txt
+Cape Verde Islands,Atlantic,Eastern Atlantic,,cape_verde.txt
+Carysfort Reef,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_CarysfortReef.txt
+Cayman Islands,Atlantic,Caribbean,,cayman_islands.txt
+Central Bahamas,Atlantic,Other Atlantic,,central_bahamas.txt
+Central GBR,Pacific,Great Barrier Reef,,gbr_central.txt
+Central Mozambique,Indian,Western Indian Ocean,,central_mozambique.txt
+Central Philippines,Pacific,Coral Triangle,,central_philippines.txt
+Central Sulawesi and Gorontalo,Pacific,Coral Triangle,,sulawesi_gorontalo.txt
+Central Western Australia,Pacific,Australia,,central_western_aus.txt
+Chacha,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Chacha.txt
+"Chagos Archipelago, UK",Indian,South Asia,,chagos_archipelago.txt
+Cheeca Rocks,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_CheecaRocks.txt
+Chesterfield Islands,Pacific,Melanesia,,chesterfield_islands.txt
+"Christmas Island, Australia",Pacific,Australia,,christmas_island.txt
+"Clipperton Island, France",Pacific,Eastern Pacific,,clipperton_island.txt
+Coconut Point,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_CoconutPoint.txt
+Cocos East,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_CocosEast.txt
+Colombia Atlantic,Atlantic,Caribbean,,colombia_atlantic.txt
+Comoros,Indian,Western Indian Ocean,,comoros.txt
+Costa Rica Atlantic,Atlantic,Caribbean,,costa_rica_atlantic.txt
+Costa Rica Pacific,Pacific,Eastern Pacific,,costa_rica_pacific.txt
+"Costa dos Corais, Brazil",Atlantic,Brazil,,costa_dos_corais.txt
+Culebra,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Culebra.txt
+"Dhofar, Oman",Indian,Middle East,,dhofar.txt
+"Dongsha, Taiwan",Pacific,East Asia,,dongsha.txt
+Double Reef,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_DoubleReef.txt
+Dry Tortugas Nursery,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_DryTortugasNursery.txt
+East Agana Bay,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_EastAganaBay.txt
+East Aguijan,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_EastAguijan.txt
+East Flower Garden Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_EastFlowerGardenBank.txt
+East Java and Bali,Pacific,Coral Triangle,,east_java_bali.txt
+East Kalimantan,Pacific,Coral Triangle,,east_kalimantan.txt
+East Nusa Tenggara,Pacific,Coral Triangle,,east_nusa_tenggara.txt
+East Rota Offshore,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_EastRotaOffshore.txt
+East St. John,Atlantic,Caribbean,VirginIslands,AtlanticOcean_Caribbean_VirginIslands_EastStJohn.txt
+"Easter Island, Chile",Pacific,Polynesia,,easter_island.txt
+Eastern Dry Rocks,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_EasternDryRocks.txt
+Eastern FSM,Pacific,Micronesia,,eastern_fsm.txt
+Eastern Gulf of Thailand,Pacific,Southeast Asia,,east_gulf_of_thailand.txt
+Eastern New Caledonia,Pacific,Melanesia,,eastern_new_caledonia.txt
+Eastern Persian Gulf,Indian,Middle East,,eastern_persian_gulf.txt
+Eastern Philippines,Pacific,Coral Triangle,,eastern_philippines.txt
+Eastern Sri Lanka,Indian,South Asia,,eastern_sri_lanka.txt
+Eastern Yemen,Indian,Middle East,,eastern_yemen.txt
+Egypt,Indian,Middle East,,egypt.txt
+El Salvador,Pacific,Eastern Pacific,,el_salvador.txt
+Elvers Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_ElversBank.txt
+Eritrea,Indian,Middle East,,eritrea.txt
+Facpi Point,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_FacpiPoint.txt
+Faga'alu,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_Fagaalu.txt
+Fagaitua,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_Fagaitua.txt
+Fagalua/Fogama'a,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_FagaluaFogamaa.txt
+Fagamalo,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_Fagamalo.txt
+Fagasa,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_Fagasa.txt
+Fagatele,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_Fagatele.txt
+Fajardo,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Fajardo.txt
+Far Northern GBR,Pacific,Great Barrier Reef,,gbr_far_northern.txt
+"Fernando de Noronha, Brazil",Atlantic,Brazil,,fernando_de_noronha.txt
+Fiji,Pacific,Melanesia,,fiji.txt
+Florida Keys,Atlantic,Florida,,florida_keys.txt
+"Flower Garden Banks, Texas",Atlantic,Gulf of Mexico,,flower_garden.txt
+Forbidden Island,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_ForbiddenIsland.txt
+Fowey Rocks,Atlantic,Florida,SoutheastFlorida,AtlanticOcean_Florida_SoutheastFlorida_FoweyRocks.txt
+Ga'an Point,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_GaanPoint.txt
+"Galapagos, Ecuador",Pacific,Eastern Pacific,,galapagos.txt
+Geyer Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_GeyerBank.txt
+"Gilbert Islands, Kiribati",Pacific,Micronesia,,gilbert_islands.txt
+Glorioso Islands,Indian,Western Indian Ocean,,glorieuse_geyser.txt
+"Great Nicobar, India",Pacific,Southeast Asia,,great_nicobar.txt
+Guam,Pacific,Micronesia,,guam.txt
+Guanica,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Guanica.txt
+Guayanilla,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Guayanilla.txt
+Gulf of Aqaba,Indian,Middle East,,gulf_of_aqaba.txt
+Gulf of Carpentaria,Pacific,Australia,,gulf_of_carpentaria.txt
+"Gulf of Kutch, India",Indian,South Asia,,gulf_of_kutch.txt
+Gulf of Mannar,Indian,South Asia,,gulf_of_mannar.txt
+Gulf of Oman,Indian,Middle East,,gulf_of_oman.txt
+Gulf of Suez,Indian,Middle East,,gulf_of_suez.txt
+"Gulf of Tadjoura, Djubouti",Indian,Middle East,,gulf_of_tadjoura.txt
+"Hainan Island, China",Pacific,East Asia,,hainan_island.txt
+Hallandale,Atlantic,Florida,SoutheastFlorida,AtlanticOcean_Florida_SoutheastFlorida_Hallandale.txt
+Hamelin Pool,Pacific,Australia,,hamelin_pool.txt
+Happy Days,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_HappyDays.txt
+Hen and Chickens Reef,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_HenandChickensReef.txt
+Honduras,Atlantic,Caribbean,,honduras.txt
+"Hong Kong, China",Pacific,East Asia,,hong_kong.txt
+HorseShoe Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_HorseShoeBank.txt
+Horseshoe Reef,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_HorseshoeReef.txt
+Houtman Abrolhos,Pacific,Australia,,houtman_abrolhos.txt
+Howland and Baker,Pacific,US Pacific Remote Islands,,howland_baker.txt
+Humatak Bay,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_HumatakBay.txt
+"Inhambane, Mozambique",Indian,Western Indian Ocean,,inhambane.txt
+Isabela,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Isabela.txt
+Isla de Mona,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_IsladeMona.txt
+"Isla del Coco, Costa Rica",Pacific,Eastern Pacific,,isla_del_coco.txt
+Jamaica,Atlantic,Caribbean,,jamaica.txt
+"Jazan, Saudi Arabia",Indian,Middle East,,jazan.txt
+Jinapsan Beach,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_JinapsanBeach.txt
+Johnston Atoll,Pacific,US Pacific Remote Islands,,johnston_atoll.txt
+"Johor and Pahang, Malaysia",Pacific,Southeast Asia,,johor_pahang.txt
+Kenya,Indian,Western Indian Ocean,,kenya.txt
+"Kerala, India",Indian,South Asia,,kerala.txt
+Key Biscayne Cluster,Atlantic,Florida,SoutheastFlorida,AtlanticOcean_Florida_SoutheastFlorida_KeyBiscayneCluster.txt
+"La Guajira, Colombia",Atlantic,Caribbean,,la_guajira.txt
+La Parguera,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_LaParguera.txt
+Lafoc Point,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_LafocPoint.txt
+"Lakshadweep, India",Indian,South Asia,,lakshadweep.txt
+Lampung and Banten,Pacific,Southeast Asia,,lampung_banten.txt
+Laulau,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Laulau.txt
+Leeward Caribbean Islands,Atlantic,Caribbean,,leeward_caribbean.txt
+Litekyan Point,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_LitekyanPoint.txt
+Long Beach,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_LongBeach.txt
+Looe Key Reef,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_LooeKeyReef.txt
+"Lord Howe Island, Australia",Pacific,Australia,,lord_howe_island.txt
+Luminao Reef,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_LuminaoReef.txt
+MacNeil Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_MacNeilBank.txt
+Main Hawaiian Islands,Pacific,Polynesia,,hawaii.txt
+"Malacca Strait, Malaysia",Pacific,Southeast Asia,,malacca_strait.txt
+Maldives,Indian,South Asia,,maldives.txt
+Malojloj,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Malojloj.txt
+"Maluku, Indonesia",Pacific,Coral Triangle,,maluku.txt
+Manell Channel,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_ManellChannel.txt
+Mangilao Golf Course,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_MangilaoGolfCourse.txt
+"Maputo, Mozambique",Indian,Western Indian Ocean,,maputo.txt
+"Maracajau, Brazil",Atlantic,Brazil,,maracajau.txt
+Marathon Patch Reefs,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_MarathonPatchReefs.txt
+Marbo,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Marbo.txt
+Marmion and Rottnest Island,Pacific,Australia,,marmion_rottnest.txt
+Marquesas Islands,Pacific,Polynesia,,marquesas_islands.txt
+Marshall Islands,Pacific,Micronesia,,marshall_islands.txt
+Masefau and Sailele,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_MasefauandSailele.txt
+Matpo to Ugis,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_MatpotoUgis.txt
+Maunabo,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Maunabo.txt
+"Mayotte, France",Indian,Western Indian Ocean,,mayotte.txt
+McGrail Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_McGrailBank.txt
+Mochong,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Mochong.txt
+Molasses Reef,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_MolassesReef.txt
+"Moreton Bay, Australia",Pacific,Australia,,moreton_bay.txt
+Naftan Rock,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_NaftanRock.txt
+Nanasu Reef,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_NanasuReef.txt
+Nauru,Pacific,Micronesia,,nauru.txt
+Nearshore Venezuela,Atlantic,Caribbean,,nearshore_venezuela.txt
+Newfound Harbor,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_NewfoundHarbor.txt
+Nicaragua,Atlantic,Caribbean,,nicaragua.txt
+Ningaloo,Pacific,Australia,,ningaloo.txt
+"Norfolk Island, Australia",Pacific,Australia,,norfolk_island.txt
+"North Maluku, Indonesia",Pacific,Coral Triangle,,north_maluku.txt
+North Miami,Atlantic,Florida,SoutheastFlorida,AtlanticOcean_Florida_SoutheastFlorida_NorthMiami.txt
+North St. Thomas,Atlantic,Caribbean,VirginIslands,AtlanticOcean_Caribbean_VirginIslands_NorthStThomas.txt
+North Sulawesi,Pacific,Coral Triangle,,north_sulawesi.txt
+North Western Australia,Pacific,Australia,,north_western_aus.txt
+Northeast St. Croix,Atlantic,Caribbean,VirginIslands,AtlanticOcean_Caribbean_VirginIslands_NortheastStCroix.txt
+Northeastern Cuba,Atlantic,Caribbean,,northeastern_cuba.txt
+Northeastern Madagascar,Indian,Western Indian Ocean,,northeastern_madagascar.txt
+Northern Bahamas,Atlantic,Other Atlantic,,northern_bahamas.txt
+"Northern Borneo, Malaysia",Pacific,Southeast Asia,,northern_borneo.txt
+Northern Cook Islands,Pacific,Polynesia,,northern_cook_islands.txt
+Northern Coral Sea Islands,Pacific,Great Barrier Reef,,northern_coral_sea.txt
+Northern GBR,Pacific,Great Barrier Reef,,gbr_northern.txt
+Northern Hispaniola,Atlantic,Caribbean,,northern_hispaniola.txt
+Northern Java,Pacific,Southeast Asia,,northern_java.txt
+Northern Line Islands,Pacific,Polynesia,,northern_line_islands.txt
+Northern Mariana Islands,Pacific,Micronesia,,northern_cnmi.txt
+Northern Mauritius,Indian,Western Indian Ocean,,northern_mauritius.txt
+Northern Mozambique,Indian,Western Indian Ocean,,northern_mozambique.txt
+Northern Myanmar,Pacific,Southeast Asia,,northern_myanmar.txt
+Northern Philippines,Pacific,Coral Triangle,,northern_philippines.txt
+"Northern Ryukyu Islands, Japan",Pacific,East Asia,,northern_ryukyu_islands.txt
+Northern Taiwan,Pacific,East Asia,,northern_taiwan.txt
+Northern Territory,Pacific,Australia,,northern_territory.txt
+Northern Tonga,Pacific,Polynesia,,northern_tonga.txt
+Northern Vietnam,Pacific,East Asia,,northern_vietnam.txt
+Northwestern Cuba,Atlantic,Caribbean,,northwestern_cuba.txt
+Northwestern Hawaiian Islands,Pacific,Polynesia,,nwhi.txt
+Northwestern Madagascar,Indian,Western Indian Ocean,,northwestern_madagascar.txt
+Northwestern Sumatra,Pacific,Southeast Asia,,northwestern_sumatra.txt
+Offshore Venezuela,Atlantic,Caribbean,,offshore_venezuela.txt
+Ofu South,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_OfuSouth.txt
+Ogasawara Islands,Pacific,Southeast Asia,,ogasawara.txt
+Olosega East,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_OlosegaEast.txt
+Olosega North,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_OlosegaNorth.txt
+Olosega South,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_OlosegaSouth.txt
+Orote Point,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_OrotePoint.txt
+Outside Grand,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_OutsideGrand.txt
+Pago Bay,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PagoBay.txt
+Palau,Pacific,Micronesia,,palau.txt
+Panama Atlantic East,Atlantic,Caribbean,,panama_atlantic_east.txt
+Panama Atlantic West,Atlantic,Caribbean,,panama_atlantic_west.txt
+Panama Pacific East,Pacific,Eastern Pacific,,panama_pacific_east.txt
+Panama Pacific West,Pacific,Eastern Pacific,,panama_pacific_west.txt
+Papua New Guinea,Pacific,Melanesia,,papua_new_guinea.txt
+"Paracel Islands, China",Pacific,East Asia,,paracel_islands.txt
+Paradise,Atlantic,Florida,SoutheastFlorida,AtlanticOcean_Florida_SoutheastFlorida_Paradise.txt
+Parker Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_ParkerBank.txt
+Pati Point North,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PatiPointNorth.txt
+Pati Point South,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PatiPointSouth.txt
+Pekngasu,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Pekngasu.txt
+"Phoenix Islands, Kiribati",Pacific,Micronesia,,phoenix_islands.txt
+Pitcairn Islands,Pacific,Polynesia,,pitcairn.txt
+Piti Bay,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PitiBay.txt
+Pontan Puna,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PontanPuna.txt
+Puerto Rico,Atlantic,Caribbean,,puerto_rico.txt
+"Pulu Keeling, Australia",Pacific,Australia,,pulu_keeling.txt
+Puntan Agighan,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PuntanAgighan.txt
+Puntan Diablo,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PuntanDiablo.txt
+Puntan Haina,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PuntanHaina.txt
+Puntan Lamanibot Sampapa,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PuntanLamanibotSampapa.txt
+Puntan Lamanibot Sanhilo,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PuntanLamanibotSanhilo.txt
+Puntan Makpe',Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PuntanMakpe.txt
+Puntan Naftan,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PuntanNaftan.txt
+Puntan Sabaneta,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PuntanSabaneta.txt
+Puntan Tahgong,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_PuntanTahgong.txt
+"Quintana Roo, Mexico",Atlantic,Caribbean,,quintana_roo.txt
+Rankin Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_RankinBank.txt
+Rezak Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_RezakBank.txt
+Riau Islands,Pacific,Southeast Asia,,riau_islands.txt
+Rincon,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Rincon.txt
+Rose Atoll East,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_RoseAtollEast.txt
+Rose Atoll West,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_RoseAtollWest.txt
+Rowley Shoals,Pacific,Australia,,rowley_shoals.txt
+"Sabah, Malaysia",Pacific,Coral Triangle,,sabah.txt
+Sailigai Point to Tatgua,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_SailigaiPointtoTatgua.txt
+Salinas,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Salinas.txt
+Samoas,Pacific,Polynesia,,samoas.txt
+San Juan,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_SanJuan.txt
+Sand Key,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_SandKey.txt
+Sao Tome and Principe,Atlantic,Eastern Atlantic,,sao_tome_principe.txt
+Scott to Ashmore Reefs,Pacific,Australia,,scott_ashmore.txt
+Seychelles,Indian,Western Indian Ocean,,seychelles.txt
+Shark Bay,Pacific,Australia,,shark_bay.txt
+Sidner Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_SidnerBank.txt
+Singapore Strait,Pacific,Southeast Asia,,singapore.txt
+Society Archipelago,Pacific,Polynesia,,society_archipelago.txt
+"Socotra, Yemen",Indian,Middle East,,socotra.txt
+Solomon Islands,Pacific,Melanesia,,solomon_islands.txt
+Somalia,Indian,Western Indian Ocean,,somalia.txt
+Sombrero Reef,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_SombreroReef.txt
+Sonnier Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_SonnierBank.txt
+South Africa,Indian,Western Indian Ocean,,south_africa.txt
+South East Sulawesi,Pacific,Coral Triangle,,southeast_sulawesi.txt
+South Point,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_SouthPoint.txt
+South St. John,Atlantic,Caribbean,VirginIslands,AtlanticOcean_Caribbean_VirginIslands_SouthStJohn.txt
+South Sulawesi,Pacific,Coral Triangle,,south_sulawesi.txt
+Southeast Florida,Atlantic,Florida,,southeast_florida.txt
+Southeastern Cuba,Atlantic,Caribbean,,southeastern_cuba.txt
+Southeastern India,Indian,South Asia,,southeastern_india.txt
+Southeastern Madagascar,Indian,Western Indian Ocean,,southeastern_madagascar.txt
+Southern Borneo,Pacific,Coral Triangle,,southern_borneo.txt
+Southern Cook Islands,Pacific,Polynesia,,southern_cook_islands.txt
+Southern Coral Sea Islands,Pacific,Great Barrier Reef,,southern_coral_sea.txt
+Southern GBR,Pacific,Great Barrier Reef,,gbr_southern.txt
+Southern Hispaniola,Atlantic,Caribbean,,southern_hispaniola.txt
+Southern Java,Pacific,Southeast Asia,,southern_java.txt
+Southern Line Islands,Pacific,Polynesia,,southern_line_islands.txt
+Southern Mauritius,Indian,Western Indian Ocean,,southern_mauritius.txt
+Southern Myanmar,Pacific,Southeast Asia,,southern_myanmar.txt
+Southern Philippines,Pacific,Coral Triangle,,southern_philippines.txt
+"Southern Ryukyu Islands, Japan",Pacific,East Asia,,southern_ryukyu_islands.txt
+Southern Sri Lanka,Indian,South Asia,,southern_sri_lanka.txt
+Southern Taiwan,Pacific,East Asia,,southern_taiwan.txt
+Southern Tonga,Pacific,Polynesia,,southern_tonga.txt
+Southern Vietnam,Pacific,East Asia,,southern_vietnam.txt
+Southwest St. Thomas,Atlantic,Caribbean,VirginIslands,AtlanticOcean_Caribbean_VirginIslands_SouthwestStThomas.txt
+Southwestern Cuba,Atlantic,Caribbean,,southwestern_cuba.txt
+Southwestern Madagascar,Indian,Western Indian Ocean,,southwestern_madagascar.txt
+Southwestern Sumatra,Pacific,Southeast Asia,,southwestern_sumatra.txt
+Southwestern Thailand,Pacific,Southeast Asia,,southwestern_thailand.txt
+Spratly Islands,Pacific,Southeast Asia,,spratly_islands.txt
+Stetson Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_StetsonBank.txt
+Sudan,Indian,Middle East,,sudan.txt
+Swains North,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_SwainsNorth.txt
+Swains South,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_SwainsSouth.txt
+Ta'u East,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_TauEast.txt
+Ta'u North,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_TauNorth.txt
+Ta'u South,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_TauSouth.txt
+Ta'u Southeast,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_TauSoutheast.txt
+Ta'u West,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_TauWest.txt
+"Tabuk, Saudi Arabia",Indian,Middle East,,tabuk.txt
+Tachokna,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Tachokna.txt
+Taipingot Penninsula,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_TaipingotPenninsula.txt
+Talofofo Bay,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_TalofofoBay.txt
+Tanguisson Beach South,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_TanguissonBeachSouth.txt
+Tanzania,Indian,Western Indian Ocean,,tanzania.txt
+Tarague Beach,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_TaragueBeach.txt
+Tatsumi Reef,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_TatsumiReef.txt
+Tavernier Nurseries,Atlantic,Florida,FloridaKeys,AtlanticOcean_Florida_FloridaKeys_TavernierNurseries.txt
+"Terengganu, Malaysia",Pacific,Southeast Asia,,terengganu.txt
+Timor-Leste,Pacific,Coral Triangle,,timor_leste.txt
+"Todos os Santos, Brazil",Atlantic,Brazil,,todos_os_santos.txt
+Togcha Bay,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_TogchaBay.txt
+Torres Strait,Pacific,Great Barrier Reef,,torres_strait.txt
+"Trinadade and Martim Vaz, Brazil",Atlantic,Brazil,,trinadade_martim_vaz.txt
+Trinidad and Tobago,Atlantic,Caribbean,,trinidad_tobago.txt
+"Tromelin and Reunion, France",Indian,Western Indian Ocean,,tromelin_reunion.txt
+Tuamotu Archipelago,Pacific,Polynesia,,tuamotu_archipelago.txt
+Tumon Bay Central,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_TumonBayCentral.txt
+Turks and Caicos,Atlantic,Other Atlantic,,turks_caicos.txt
+Tuvalu,Pacific,Polynesia,,tuvalu.txt
+Unai Chulu,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_UnaiChulu.txt
+Urunao,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_Urunao.txt
+Vanuatu,Pacific,Melanesia,,vanuatu.txt
+Vatia,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_Vatia.txt
+Vega Baja,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_VegaBaja.txt
+"Veracruz, Mexico",Atlantic,Gulf of Mexico,,veracruz.txt
+Vieques,Atlantic,Caribbean,PuertoRico,AtlanticOcean_Caribbean_PuertoRico_Vieques.txt
+Virgin Islands,Atlantic,Caribbean,,usvi.txt
+Wake Atoll,Pacific,US Pacific Remote Islands,,wake_atoll.txt
+Wallis and Futuna,Pacific,Polynesia,,wallis_futuna.txt
+West Agana Bay,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_WestAganaBay.txt
+West Aguijan,Pacific,Micronesia,GuamandCNMI,PacificOcean_Micronesia_GuamandCNMI_WestAguijan.txt
+West Flower Garden Bank,Atlantic,Caribbean,FlowerGardenBanks,AtlanticOcean_Caribbean_FlowerGardenBanks_WestFlowerGardenBank.txt
+West Kalimantan,Pacific,Southeast Asia,,west_kalimanta.txt
+West Nusa Tenggara,Pacific,Coral Triangle,,west_nusa_tenggara.txt
+West Papua,Pacific,Melanesia,,west_papua.txt
+West Pola,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_WestPola.txt
+West St. Croix,Atlantic,Caribbean,VirginIslands,AtlanticOcean_Caribbean_VirginIslands_WestStCroix.txt
+West Sulawesi,Pacific,Coral Triangle,,west_sulawesi.txt
+West Timor,Pacific,Coral Triangle,,west_timor.txt
+West Tutuila,Pacific,Polynesia,SamoanIslands,PacificOcean_Polynesia_SamoanIslands_WestTutuila.txt
+Western FSM,Pacific,Micronesia,,western_fsm.txt
+Western Gulf of Thailand,Pacific,Southeast Asia,,west_gulf_of_thailand.txt
+Western India,Indian,South Asia,,western_india.txt
+Western Madagascar,Indian,Western Indian Ocean,,western_madagascar.txt
+Western New Caledonia,Pacific,Melanesia,,western_new_caledonia.txt
+Western Persian Gulf,Indian,Middle East,,western_persian_gulf.txt
+Western Philippines,Pacific,Coral Triangle,,western_philippines.txt
+Western Yemen,Indian,Middle East,,western_yemen.txt
+Windward Caribbean Islands,Atlantic,Caribbean,,windward_caribbean.txt
+Yucatan Peninsula,Atlantic,Gulf of Mexico,,yucatan.txt

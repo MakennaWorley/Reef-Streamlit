@@ -39,8 +39,13 @@ if page == 'Home':
 			get_data_summary,
 			get_most_recent_common_date,
 			get_most_recent_data_for_station,
+			get_ocean_for_region,
 			get_station_data,
+			get_stations_by_ocean_region,
 			get_stations_by_region,
+			get_unique_oceans,
+			get_unique_regions,
+			get_unique_subregions,
 		)
 
 		# Display summary metrics
@@ -82,7 +87,7 @@ if page == 'Home':
 		st.divider()
 
 		# Create tabs for different views
-		tab_all, tab_station, tab_region = st.tabs(['📊 All Data', '🏝️ By Station', '🗺️ By Region'])
+		tab_all, tab_station, tab_region, tab_ocean = st.tabs(['📊 All Data', '🏝️ By Station', '🗺️ By Region', '🌊 By Ocean'])
 
 		# TAB 1: All Data
 		with tab_all:
@@ -160,25 +165,115 @@ if page == 'Home':
 		# TAB 3: By Region
 		with tab_region:
 			st.subheader('View Data by Region')
-			regions = get_stations_by_region()
 
-			if regions:
-				region_names = sorted(regions.keys())
-				selected_region = st.selectbox('Select a region:', region_names)
+			# Get all unique regions across all oceans
+			all_regions = get_unique_regions()
+			if not all_regions:
+				st.warning('No regions found in station mappings.')
+			else:
+				# Region dropdown
+				selected_region = st.selectbox('Select a region:', all_regions, key='region_tab_region')
 
-				if selected_region:
-					region_stations = regions[selected_region]
-					st.info(f'**{selected_region}** - {len(region_stations)} station(s)')
+				# Get ocean for this region
+				ocean_for_region = get_ocean_for_region(selected_region)
 
-					# Get the most recent common date for all stations in this region
+				if ocean_for_region:
+					# Get subregions for this region
+					subregions = get_unique_subregions(ocean_for_region, selected_region)
+
+					# If there are subregions, show dropdown; otherwise proceed with region
+					if subregions:
+						selected_subregion = st.selectbox('Select a subregion (optional):', ['All Subregions'] + subregions, key='region_tab_subregion')
+						if selected_subregion == 'All Subregions':
+							# Get all stations for this region
+							region_stations = get_stations_by_ocean_region(ocean_for_region, selected_region)
+						else:
+							# Get stations for region and subregion
+							region_stations = get_stations_by_ocean_region(ocean_for_region, selected_region, selected_subregion)
+					else:
+						# No subregions, just use region
+						region_stations = get_stations_by_ocean_region(ocean_for_region, selected_region)
+
+					if region_stations:
+						st.info(f'**{ocean_for_region} - {selected_region}** - {len(region_stations)} station(s)')
+
+						# Find the most recent date with data from all region stations
+						collection = get_collection()
+
+						# Find the most recent date with data from all region stations
+						pipeline = [
+							{
+								'$match': {
+									'station_name': {'$in': region_stations},
+									'year': {'$exists': True},
+									'month': {'$exists': True},
+									'day': {'$exists': True},
+								}
+							},
+							{'$group': {'_id': {'year': '$year', 'month': '$month', 'day': '$day'}, 'station_count': {'$addToSet': '$station_name'}}},
+							{'$addFields': {'num_stations': {'$size': '$station_count'}}},
+							{'$match': {'num_stations': len(region_stations)}},
+							{'$sort': {'_id.year': -1, '_id.month': -1, '_id.day': -1}},
+							{'$limit': 1},
+						]
+
+						result = list(collection.aggregate(pipeline))
+
+						if result:
+							date_info = result[0]['_id']
+							region_date_str = f'{date_info["year"]}-{date_info["month"]:02d}-{date_info["day"]:02d}'
+
+							# Get data for all region stations on this date
+							region_data = list(
+								collection.find(
+									{
+										'station_name': {'$in': region_stations},
+										'year': date_info['year'],
+										'month': date_info['month'],
+										'day': date_info['day'],
+									}
+								).sort('station_name', 1)
+							)
+
+							if region_data:
+								df_region = pd.DataFrame(region_data)
+								st.info(f'Showing data from **{region_date_str}** (most recent complete date for this selection)')
+								display_metric_ranges_stats(df_region, title_suffix=f'Range across {len(region_data)} stations')
+							else:
+								st.warning(f'No data found on {region_date_str}.')
+						else:
+							st.warning(f'No common date found where all selected stations have data.')
+					else:
+						st.warning('No stations found for the selected region.')
+				else:
+					st.warning('Could not determine ocean for this region.')
+
+		# TAB 4: By Ocean
+		with tab_ocean:
+			st.subheader('View Data by Ocean')
+
+			# Get all unique oceans
+			oceans = get_unique_oceans()
+			if not oceans:
+				st.warning('No ocean data available in station mappings.')
+			else:
+				# Ocean dropdown
+				selected_ocean = st.selectbox('Select an ocean:', oceans, key='ocean_tab_ocean')
+
+				# Get stations for the selected ocean
+				ocean_stations = get_stations_by_ocean_region(selected_ocean)
+
+				if ocean_stations:
+					st.info(f'**{selected_ocean}** - {len(ocean_stations)} station(s)')
+
+					# Find the most recent date with data from all ocean stations
 					collection = get_collection()
-					region_station_names = [s.get('station_name', 'Unknown') for s in region_stations]
 
-					# Find the most recent date with data from all region stations
+					# Find the most recent date with data from all ocean stations
 					pipeline = [
 						{
 							'$match': {
-								'station_name': {'$in': region_station_names},
+								'station_name': {'$in': ocean_stations},
 								'year': {'$exists': True},
 								'month': {'$exists': True},
 								'day': {'$exists': True},
@@ -186,7 +281,7 @@ if page == 'Home':
 						},
 						{'$group': {'_id': {'year': '$year', 'month': '$month', 'day': '$day'}, 'station_count': {'$addToSet': '$station_name'}}},
 						{'$addFields': {'num_stations': {'$size': '$station_count'}}},
-						{'$match': {'num_stations': len(region_station_names)}},
+						{'$match': {'num_stations': len(ocean_stations)}},
 						{'$sort': {'_id.year': -1, '_id.month': -1, '_id.day': -1}},
 						{'$limit': 1},
 					]
@@ -195,13 +290,13 @@ if page == 'Home':
 
 					if result:
 						date_info = result[0]['_id']
-						region_date_str = f'{date_info["year"]}-{date_info["month"]:02d}-{date_info["day"]:02d}'
+						ocean_date_str = f'{date_info["year"]}-{date_info["month"]:02d}-{date_info["day"]:02d}'
 
-						# Get data for all region stations on this date
-						region_data = list(
+						# Get data for all ocean stations on this date
+						ocean_data = list(
 							collection.find(
 								{
-									'station_name': {'$in': region_station_names},
+									'station_name': {'$in': ocean_stations},
 									'year': date_info['year'],
 									'month': date_info['month'],
 									'day': date_info['day'],
@@ -209,16 +304,16 @@ if page == 'Home':
 							).sort('station_name', 1)
 						)
 
-						if region_data:
-							df_region = pd.DataFrame(region_data)
-							st.info(f'Showing data from **{region_date_str}** (most recent complete date for this region)')
-							display_metric_ranges_stats(df_region, title_suffix=f'Range across {len(region_data)} stations in {selected_region}')
+						if ocean_data:
+							df_ocean = pd.DataFrame(ocean_data)
+							st.info(f'Showing data from **{ocean_date_str}** (most recent complete date for this selection)')
+							display_metric_ranges_stats(df_ocean, title_suffix=f'Range across {len(ocean_data)} stations')
 						else:
-							st.warning(f'No data found for {selected_region} on {region_date_str}.')
+							st.warning(f'No data found on {ocean_date_str}.')
 					else:
-						st.warning(f'No common date found where all stations in {selected_region} have data.')
-			else:
-				st.warning('No regions found in database.')
+						st.warning(f'No common date found where all selected stations have data.')
+				else:
+					st.warning('No stations found for the selected ocean.')
 
 	except Exception as e:
 		st.error(f'Dashboard error: {e}')

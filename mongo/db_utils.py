@@ -367,3 +367,103 @@ def get_stations_by_region():
 		regions[region].append(station)
 
 	return regions
+
+
+def get_unique_oceans():
+	"""
+	Get all unique oceans from the station_mappings collection.
+
+	Returns:
+	    list: Sorted list of ocean names
+	"""
+	try:
+		collection = get_collection('station_mappings')
+		oceans = collection.distinct('ocean')
+		return sorted([o for o in oceans if o])
+	except Exception:
+		return []
+
+
+def get_unique_regions(ocean=None):
+	"""
+	Get all unique regions, optionally filtered by ocean.
+
+	Args:
+	    ocean: Optional ocean name to filter by
+
+	Returns:
+	    list: Sorted list of region names
+	"""
+	try:
+		collection = get_collection('station_mappings')
+		query = {}
+		if ocean:
+			query['ocean'] = ocean
+		regions = collection.distinct('region', query)
+		return sorted([r for r in regions if r])
+	except Exception:
+		return []
+
+
+def get_ocean_for_region(region):
+	"""
+	Get the ocean for a given region.
+
+	Args:
+	    region: Region name
+
+	Returns:
+	    str: Ocean name or None if not found
+	"""
+	try:
+		collection = get_collection('station_mappings')
+		result = collection.find_one({'region': region}, {'ocean': 1})
+		return result['ocean'] if result else None
+	except Exception:
+		return None
+
+
+def get_unique_subregions(ocean, region):
+	"""
+	Get all unique subregions for a given ocean and region.
+
+	Args:
+	    ocean: Ocean name
+	    region: Region name
+
+	Returns:
+	    list: Sorted list of subregion names (empty string if no subregion)
+	"""
+	try:
+		collection = get_collection('station_mappings')
+		subregions = collection.distinct('subregion', {'ocean': ocean, 'region': region})
+		# Filter out None and empty strings, keep them sorted
+		return sorted([s for s in subregions if s])
+	except Exception:
+		return []
+
+
+def get_stations_by_ocean_region(ocean, region=None, subregion=None):
+	"""
+	Get all station names for a given ocean, optionally filtered by region and subregion.
+
+	Args:
+	    ocean: Ocean name
+	    region: Optional region name
+	    subregion: Optional subregion name
+
+	Returns:
+	    list: List of station names
+	"""
+	try:
+		collection = get_collection('station_mappings')
+		query = {'ocean': ocean}
+		if region:
+			query['region'] = region
+		if subregion:
+			query['subregion'] = subregion
+
+		mappings = list(collection.find(query).sort('station_name', 1))
+		return [m['station_name'] for m in mappings]
+	except Exception:
+		return []
