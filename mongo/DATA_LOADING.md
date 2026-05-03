@@ -12,7 +12,7 @@ You have **two separate scripts** for different purposes:
 - Loads every row of historical measurements
 - Creates the stations collection with coordinates
 - Sets up database indexes
-- Takes several minutes (one-time only)
+- Takes 20+ minutes (one-time only)
 
 **When to use:**
 - First time setting up your database
@@ -21,10 +21,10 @@ You have **two separate scripts** for different purposes:
 **Command:**
 ```bash
 # Load all data
-python data_scraper/load_historical_data.py
+python mongo/load_historical_data.py
 
 # Clear database first, then load all data
-python data_scraper/load_historical_data.py --clear
+python mongo/load_historical_data.py --clear
 ```
 
 **Example output:**
@@ -67,7 +67,6 @@ Total records loaded: 48,234
 - Adds only NEW measurements to the database
 - Does NOT delete existing data
 - Updates station coordinates if they changed
-- Takes ~30 seconds to 1 minute
 
 **When to use:**
 - Every day (or multiple times per day)
@@ -76,7 +75,7 @@ Total records loaded: 48,234
 **Command:**
 ```bash
 # Load today's data
-python data_scraper/load_daily_data.py
+python mongo/load_daily_data.py
 ```
 
 **Example output:**
@@ -107,7 +106,7 @@ Total measurements added today: 363
 ### Step 1: Initial Historical Load (First Time Only)
 ```bash
 source reef-env/bin/activate
-python data_scraper/load_historical_data.py --clear
+python mongo/load_historical_data.py --clear
 ```
 
 This loads all your ~48,000 historical measurements into MongoDB.
@@ -122,12 +121,12 @@ crontab -e
 
 Add this line to run daily at 2 AM:
 ```cron
-0 2 * * * cd /Users/makennaworley/Desktop/GitHubCode/reef-streamlit && source reef-env/bin/activate && python data_scraper/load_daily_data.py >> /tmp/reef_daily_load.log 2>&1
+0 2 * * * cd /Users/makennaworley/Desktop/GitHubCode/reef-streamlit && source reef-env/bin/activate && python mongo/load_daily_data.py >> /tmp/reef_daily_load.log 2>&1
 ```
 
 Or run daily at multiple times (e.g., every 6 hours):
 ```cron
-0 0,6,12,18 * * * cd /Users/makennaworley/Desktop/GitHubCode/reef-streamlit && source reef-env/bin/activate && python data_scraper/load_daily_data.py >> /tmp/reef_daily_load.log 2>&1
+0 0,6,12,18 * * * cd /Users/makennaworley/Desktop/GitHubCode/reef-streamlit && source reef-env/bin/activate && python mongo/load_daily_data.py >> /tmp/reef_daily_load.log 2>&1
 ```
 
 Check logs:
