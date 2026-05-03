@@ -22,6 +22,7 @@ Example cron job (runs daily at 2 AM):
 ================================================================================
 """
 
+import glob
 import os
 import sys
 from datetime import datetime, timedelta
@@ -73,12 +74,52 @@ def get_last_update_date():
 	return None
 
 
-def csv_to_records(csv_file: str):
+def load_station_metadata(directory=None):
 	"""
-	Convert a CSV file to database records.
+	Load station metadata from _station_location.csv to normalize station names.
+	This matches the historical loader to ensure consistency between daily and historical data.
+
+	Args:
+	    directory: Path to historical_data directory
+
+	Returns:
+	    dict: Mapping of filename -> station_name
+	"""
+	if directory is None:
+		directory = os.path.join(os.path.dirname(__file__), '..', 'historical_data')
+
+	station_file = os.path.join(directory, '_station_location.csv')
+
+	if not os.path.exists(station_file):
+		print(f'⚠ Station location file not found: {station_file}')
+		print('  Will use filename-based naming (may cause mismatches)')
+		return {}
+
+	try:
+		df = pd.read_csv(station_file)
+
+		# Create mapping: filename -> station_name
+		metadata = {}
+		for _, row in df.iterrows():
+			filename = row.get('Filename', '').replace('.txt', '').replace('.csv', '')
+			if filename:
+				metadata[filename] = row.get('Station Name', '')
+
+		if metadata:
+			print(f'✓ Loaded metadata for {len(metadata)} stations')
+		return metadata
+	except Exception as e:
+		print(f'⚠ Error loading station metadata: {e}')
+		return {}
+
+
+def csv_to_records(csv_file: str, station_metadata: dict):
+	"""
+	Convert a CSV file to database records using standardized station names.
 
 	Args:
 	    csv_file: Path to the CSV file
+	    station_metadata: Dictionary mapping filename -> station_name
 
 	Returns:
 	    list: List of record dicts ready for MongoDB (measurements only)
@@ -87,9 +128,15 @@ def csv_to_records(csv_file: str):
 		df = pd.read_csv(csv_file)
 		records = []
 
-		# Extract station name from filename
+		# Extract filename and look up proper station name
 		filename = os.path.basename(csv_file)
-		station_name = filename.replace('.csv', '').replace('_', ' ')
+		filename_key = filename.replace('.csv', '')
+
+		# Use metadata if available, otherwise fall back to filename
+		if filename_key in station_metadata:
+			station_name = station_metadata[filename_key]
+		else:
+			station_name = filename_key.replace('_', ' ')
 
 		for _, row in df.iterrows():
 			record = {'station_name': station_name, 'year': int(row.get('YYYY', 0)), 'month': int(row.get('MM', 0)), 'day': int(row.get('DD', 0))}
@@ -161,21 +208,30 @@ def scrape_daily_data():
 		csv_files.extend(station_csv_files)
 		stations.extend(station_stations)
 
+		# Load station metadata for proper name normalization
+		print('Loading station metadata...')
+		station_metadata = load_station_metadata()
+
 		# Convert CSVs to records
 		records = []
 
 		for csv_file in csv_files:
-			csv_records = csv_to_records(csv_file)
+			csv_records = csv_to_records(csv_file, station_metadata)
 			records.extend(csv_records)
 
 		# Add any new stations from the scraped data
 		if stations:
 			print(f'Found {len(stations)} station metadata updates')
 
-		# Cleanup temp directory
+		# Cleanup temp directory (ONLY .temp_data, never historical_data)
 		import shutil
 
-		shutil.rmtree(temp_dir, ignore_errors=True)
+		# Safety check: never delete historical_data directory
+		if 'historical_data' not in temp_dir and '.temp_data' in temp_dir:
+			shutil.rmtree(temp_dir, ignore_errors=True)
+			print(f'✓ Cleaned up temporary files: {temp_dir}')
+		else:
+			print(f'⚠ Skipped cleanup for: {temp_dir} (safety check)')
 
 		return records, stations
 
