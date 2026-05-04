@@ -17,7 +17,7 @@ if 'scheduler_started' not in st.session_state:
 		start_scheduler()
 		st.session_state.scheduler_started = True
 	except Exception as e:
-		print(f'⚠ Could not start scheduler: {e}')
+		print(f'WARNING: Could not start scheduler: {e}')
 		st.session_state.scheduler_started = False
 
 st.title('🪸 Reef Streamlit App')
@@ -30,8 +30,26 @@ if page == 'Home':
 	try:
 		import pandas as pd
 		import plotly.express as px
+		import plotly.graph_objects as go
+		from plotly.subplots import make_subplots
+		from visualization_utils import display_metric_ranges_stats
 
-		from mongo.db_utils import get_all_stations, get_collection, get_data_summary
+		from mongo.db_utils import (
+			get_all_stations,
+			get_collection,
+			get_data_for_date,
+			get_data_summary,
+			get_most_recent_common_date,
+			get_most_recent_data_for_station,
+			get_ocean_for_region,
+			get_station_data,
+			get_station_data_for_month,
+			get_stations_by_ocean_region,
+			get_stations_by_region,
+			get_unique_oceans,
+			get_unique_regions,
+			get_unique_subregions,
+		)
 
 		# Display summary metrics
 		st.subheader('Database Overview')
@@ -39,67 +57,25 @@ if page == 'Home':
 
 		col1, col2, col3, col4 = st.columns(4)
 		with col1:
-			st.metric('📊 Total Records', f'{summary["total_records"]:,}')
+			st.metric('Total Records', f'{summary["total_records"]:,}')
 		with col2:
-			st.metric('📍 Total Stations', summary.get('unique_stations', 'N/A'))
+			st.metric('Total Stations', summary.get('unique_stations', 'N/A'))
 		with col3:
 			if summary.get('oldest_record'):
-				st.metric('📅 Oldest Record', summary['oldest_record'])
+				st.metric('Oldest Record', summary['oldest_record'])
 		with col4:
 			if summary.get('newest_record'):
-				st.metric('📅 Latest Record', summary['newest_record'])
-
+				st.metric('Latest Record', summary['newest_record'])
 		st.divider()
 
-		# Display stations and their data counts
-		st.subheader('Stations & Data Distribution')
-		stations = get_all_stations()
-
-		if stations:
-			# Create DataFrame for visualization
-			stations_df = pd.DataFrame(
-				[
-					{
-						'Station': s.get('station_name', 'Unknown'),
-						'Datapoints': s.get('datapoint_count', 0),
-						'Latitude': s.get('latitude'),
-						'Longitude': s.get('longitude'),
-					}
-					for s in stations
-				]
-			)
-
-			# Chart: Datapoints by Station
-			if not stations_df.empty:
-				fig = px.bar(
-					stations_df.sort_values('Datapoints', ascending=True),
-					y='Station',
-					x='Datapoints',
-					orientation='h',
-					title='Data Distribution by Station',
-					labels={'Datapoints': 'Number of Records'},
-					color='Datapoints',
-					color_continuous_scale='Blues',
-				)
-				fig.update_layout(height=400, showlegend=False)
-				st.plotly_chart(fig, use_container_width=True)
-
-				# Display station table
-				with st.expander('📋 View All Stations', expanded=False):
-					st.dataframe(stations_df, use_container_width=True, hide_index=True)
-		else:
-			st.warning('No stations found in database.')
-
-		st.divider()
-
-		# Quick Stats
+		# Quick Actions
 		st.subheader('Quick Actions')
 		col1, col2 = st.columns(2)
 		with col1:
-			if st.button('🔍 Go to Query Database', use_container_width=True):
+			if st.button('Go to Query Database', use_container_width=True):
 				st.switch_page('pages/Query Database')
 		with col2:
-			if st.button('📊 View Recent Data', use_container_width=True):
+			if st.button('View Recent Data', use_container_width=True):
 				with st.spinner('Loading recent measurements...'):
 					collection = get_collection()
 					recent = list(collection.find().sort('_id', -1).limit(10))
@@ -110,6 +86,428 @@ if page == 'Home':
 						st.dataframe(recent_df, use_container_width=True, hide_index=True)
 					else:
 						st.info('No data available yet.')
+
+		st.divider()
+
+		# Create tabs for different views
+		tab_all, tab_station, tab_region, tab_ocean = st.tabs(['📊 All Data', '🏝️ By Station', '🗺️ By Region', '🌊 By Ocean'])
+
+		# TAB 1: All Data
+		with tab_all:
+			st.subheader('Most Recent Complete Data Day')
+			common_date = get_most_recent_common_date()
+
+			if common_date:
+				date_str = common_date['date_str']
+				st.info(f'Showing data from **{date_str}** (most recent day with all stations)')
+
+				# Get data for this date
+				data_records = get_data_for_date(common_date['year'], common_date['month'], common_date['day'])
+
+				if data_records:
+					df_date = pd.DataFrame(data_records)
+
+					# Display metric ranges and stats
+					display_metric_ranges_stats(df_date, title_suffix=f'Range across stations on {date_str}')
+				else:
+					st.warning('No data found for the most recent complete date.')
+			else:
+				st.warning('No common date found where all stations have data. Check data coverage.')
+
+			st.divider()
+
+			# Display stations and their data counts
+			st.subheader('Stations & Data Distribution')
+			stations = get_all_stations()
+
+			if stations:
+				# Create DataFrame for visualization
+				stations_df = pd.DataFrame(
+					[
+						{
+							'Station': s.get('station_name', 'Unknown'),
+							'Datapoints': s.get('datapoint_count', 0),
+							'Latitude': s.get('latitude'),
+							'Longitude': s.get('longitude'),
+						}
+						for s in stations
+					]
+				)
+
+				# Display station table
+				if not stations_df.empty:
+					st.dataframe(stations_df, use_container_width=True, hide_index=True)
+			else:
+				st.warning('No stations found in database.')
+
+		# TAB 2: By Station
+		with tab_station:
+			st.subheader('View Data by Individual Station')
+			stations = get_all_stations()
+
+			if stations:
+				station_names = sorted([s.get('station_name', 'Unknown') for s in stations])
+				selected_station = st.selectbox('Select a station:', station_names)
+
+				# Get available years and months for this station
+				collection = get_collection()
+				all_dates = list(
+					collection.find({'station_name': selected_station}, {'year': 1, 'month': 1}).distinct(
+						'year'
+					)
+				)
+				available_years = sorted(
+					set(
+						doc.get('year')
+						for doc in collection.find({'station_name': selected_station}, {'year': 1})
+						if doc.get('year')
+					),
+					reverse=True,
+				)
+
+				if available_years:
+					# Month name mapping
+					month_names = {
+						1: 'January',
+						2: 'February',
+						3: 'March',
+						4: 'April',
+						5: 'May',
+						6: 'June',
+						7: 'July',
+						8: 'August',
+						9: 'September',
+						10: 'October',
+						11: 'November',
+						12: 'December',
+					}
+
+					# Year and month selectors
+					col1, col2 = st.columns(2)
+					with col1:
+						# Default to 2026 if available, otherwise first year
+						default_year_idx = 0
+						if 2026 in available_years:
+							default_year_idx = available_years.index(2026)
+						selected_year = st.selectbox(
+							'Select year:', available_years, index=default_year_idx, key='station_year'
+						)
+
+					# Get available months for selected year
+					available_months = sorted(
+						set(
+							doc.get('month')
+							for doc in collection.find(
+								{'station_name': selected_station, 'year': selected_year},
+								{'month': 1},
+							)
+							if doc.get('month')
+						)
+					)
+
+					with col2:
+						# Create month display options
+						month_options = [(m, month_names.get(m, str(m))) for m in available_months]
+
+						# Default to May (5) if available, otherwise first month
+						default_month_idx = 0
+						if any(m[0] == 5 for m in month_options):
+							default_month_idx = next(i for i, m in enumerate(month_options) if m[0] == 5)
+
+						selected_month_name = st.selectbox(
+							'Select month:',
+							[m[1] for m in month_options],
+							index=default_month_idx,
+							key='station_month',
+						)
+
+						# Get the numeric month value
+						selected_month = next(m[0] for m in month_options if m[1] == selected_month_name)
+
+					# Get data for the selected month
+					month_data = get_station_data_for_month(selected_station, selected_year, selected_month)
+
+					if month_data:
+						df_month = pd.DataFrame(month_data)
+
+						# Get ocean and region info from station mappings
+						mappings_path = os.path.join(os.path.dirname(__file__), '..', 'data_scraper', 'station_mappings.csv')
+						station_mappings = pd.read_csv(mappings_path)
+						station_row = station_mappings[station_mappings['station_name'] == selected_station]
+						
+						# Build info text with station metadata
+						info_text = f'**{selected_station}** - {selected_year}-{selected_month:02d} ({len(month_data)} days of data)'
+						if not station_row.empty:
+							ocean = station_row.iloc[0]['ocean']
+							region = station_row.iloc[0]['region']
+							subregion = station_row.iloc[0]['subregion']
+							
+							info_text += f'\n**Ocean:** {ocean} | **Region:** {region}'
+							if pd.notna(subregion) and subregion.strip():
+								info_text += f' | **Subregion:** {subregion}'
+						
+						# Display info
+						st.info(info_text)
+
+						# Define metric columns to graph
+						metric_columns = [
+							'SST_MIN',
+							'SST_MAX',
+							'SST@90th_HS',
+							'SSTA@90th_HS',
+							'90th_HS>0',
+							'DHW_from_90th_HS>1',
+							'BAA_7day_max',
+						]
+
+						# Filter to available metrics (only show if column exists AND has data)
+						available_metrics = []
+						for col in metric_columns:
+							if col in df_month.columns:
+								# Check if column has any non-null values after numeric conversion
+								numeric_col = pd.to_numeric(df_month[col], errors='coerce')
+								if numeric_col.notna().any():
+									available_metrics.append(col)
+
+						if available_metrics:
+							# Create a column for date string for x-axis
+							df_month['date'] = pd.to_datetime(
+								df_month[['year', 'month', 'day']].rename(
+									columns={'year': 'Year', 'month': 'Month', 'day': 'Day'}
+								),
+								errors='coerce',
+							)
+
+							# Calculate number of rows needed for 2-column layout
+							num_metrics = len(available_metrics)
+							num_rows = (num_metrics + 1) // 2
+
+							# Create subplots (x-axis sync handled via matches below)
+							fig = make_subplots(
+								rows=num_rows,
+								cols=2,
+								subplot_titles=available_metrics,
+								vertical_spacing=0.12,
+								horizontal_spacing=0.1,
+							)
+
+							# Add traces for each metric
+							for idx, metric in enumerate(available_metrics):
+								row = (idx // 2) + 1
+								col = (idx % 2) + 1
+
+								# Convert to numeric, handling NaN
+								numeric_values = pd.to_numeric(df_month[metric], errors='coerce')
+
+								fig.add_trace(
+									go.Scatter(
+										x=df_month['date'],
+										y=numeric_values,
+										mode='lines+markers',
+										name=metric,
+										line=dict(width=2),
+										hovertemplate='<b>' + metric + '</b><br>Date: %{x|%Y-%m-%d}<br>Value: %{y}<extra></extra>',
+									),
+									row=row,
+									col=col,
+								)
+
+								# Update y-axis label for each subplot
+								fig.update_yaxes(title_text='Value', row=row, col=col)
+
+							# Update layout
+							fig.update_layout(
+								height=350 * num_rows,
+								showlegend=False,
+								hovermode='x unified',
+								title_text=f'<b>{selected_station}</b> - {selected_year}-{selected_month:02d}',
+								title_x=0.5,
+							)
+
+							# Link all x-axes to the first subplot so zooming any graph syncs all
+							for row in range(1, num_rows + 1):
+								for col_idx in range(1, 3):
+									if not (row == 1 and col_idx == 1):
+										fig.update_xaxes(matches='x', row=row, col=col_idx)
+
+							# Hide tick labels on non-bottom rows for cleaner display
+							for row in range(1, num_rows):
+								fig.update_xaxes(showticklabels=False, row=row, col=1)
+								fig.update_xaxes(showticklabels=False, row=row, col=2)
+
+							# Update x-axis label for bottom plots
+							fig.update_xaxes(title_text='Date', row=num_rows, col=1)
+							if num_metrics % 2 == 1:
+								fig.update_xaxes(title_text='Date', row=num_rows, col=2)
+
+							# Prevent y-axis from being zoomed: when the linked x-axis resets
+							# (e.g. double-click on another graph), the y-axis range could get
+							# stuck at the previously zoomed position, making the line appear at
+							# the wrong height. fixedrange=True keeps y always at full autorange.
+							fig.update_yaxes(fixedrange=True)
+
+							st.plotly_chart(fig, use_container_width=True)
+						else:
+							st.warning('No metric data available for this period.')
+					else:
+						st.warning(f'No data found for {selected_station} in {selected_year}-{selected_month:02d}.')
+				else:
+					st.warning(f'No data found for station: {selected_station}')
+			else:
+				st.warning('No stations found in database.')
+
+		# TAB 3: By Region
+		with tab_region:
+			st.subheader('View Data by Region')
+
+			# Get all unique regions across all oceans
+			all_regions = get_unique_regions()
+			if not all_regions:
+				st.warning('No regions found in station mappings.')
+			else:
+				# Region dropdown
+				selected_region = st.selectbox('Select a region:', all_regions, key='region_tab_region')
+
+				# Get ocean for this region
+				ocean_for_region = get_ocean_for_region(selected_region)
+
+				if ocean_for_region:
+					# Get subregions for this region
+					subregions = get_unique_subregions(ocean_for_region, selected_region)
+
+					# If there are subregions, show dropdown; otherwise proceed with region
+					if subregions:
+						selected_subregion = st.selectbox('Select a subregion (optional):', ['All Subregions'] + subregions, key='region_tab_subregion')
+						if selected_subregion == 'All Subregions':
+							# Get all stations for this region
+							region_stations = get_stations_by_ocean_region(ocean_for_region, selected_region)
+						else:
+							# Get stations for region and subregion
+							region_stations = get_stations_by_ocean_region(ocean_for_region, selected_region, selected_subregion)
+					else:
+						# No subregions, just use region
+						region_stations = get_stations_by_ocean_region(ocean_for_region, selected_region)
+
+					if region_stations:
+						st.info(f'**{ocean_for_region} - {selected_region}** - {len(region_stations)} station(s)')
+
+						# Find the most recent date with data from all region stations
+						collection = get_collection()
+
+						# Find the most recent date with data from all region stations
+						pipeline = [
+							{
+								'$match': {
+									'station_name': {'$in': region_stations},
+									'year': {'$exists': True},
+									'month': {'$exists': True},
+									'day': {'$exists': True},
+								}
+							},
+							{'$group': {'_id': {'year': '$year', 'month': '$month', 'day': '$day'}, 'station_count': {'$addToSet': '$station_name'}}},
+							{'$addFields': {'num_stations': {'$size': '$station_count'}}},
+							{'$match': {'num_stations': len(region_stations)}},
+							{'$sort': {'_id.year': -1, '_id.month': -1, '_id.day': -1}},
+							{'$limit': 1},
+						]
+
+						result = list(collection.aggregate(pipeline))
+
+						if result:
+							date_info = result[0]['_id']
+							region_date_str = f'{date_info["year"]}-{date_info["month"]:02d}-{date_info["day"]:02d}'
+
+							# Get data for all region stations on this date
+							region_data = list(
+								collection.find(
+									{
+										'station_name': {'$in': region_stations},
+										'year': date_info['year'],
+										'month': date_info['month'],
+										'day': date_info['day'],
+									}
+								).sort('station_name', 1)
+							)
+
+							if region_data:
+								df_region = pd.DataFrame(region_data)
+								st.info(f'Showing data from **{region_date_str}** (most recent complete date for this selection)')
+								display_metric_ranges_stats(df_region, title_suffix=f'Range across {len(region_data)} stations')
+							else:
+								st.warning(f'No data found on {region_date_str}.')
+						else:
+							st.warning(f'No common date found where all selected stations have data.')
+					else:
+						st.warning('No stations found for the selected region.')
+				else:
+					st.warning('Could not determine ocean for this region.')
+
+		# TAB 4: By Ocean
+		with tab_ocean:
+			st.subheader('View Data by Ocean')
+
+			# Get all unique oceans
+			oceans = get_unique_oceans()
+			if not oceans:
+				st.warning('No ocean data available in station mappings.')
+			else:
+				# Ocean dropdown
+				selected_ocean = st.selectbox('Select an ocean:', oceans, key='ocean_tab_ocean')
+
+				# Get stations for the selected ocean
+				ocean_stations = get_stations_by_ocean_region(selected_ocean)
+
+				if ocean_stations:
+					st.info(f'**{selected_ocean}** - {len(ocean_stations)} station(s)')
+
+					# Find the most recent date with data from all ocean stations
+					collection = get_collection()
+
+					# Find the most recent date with data from all ocean stations
+					pipeline = [
+						{
+							'$match': {
+								'station_name': {'$in': ocean_stations},
+								'year': {'$exists': True},
+								'month': {'$exists': True},
+								'day': {'$exists': True},
+							}
+						},
+						{'$group': {'_id': {'year': '$year', 'month': '$month', 'day': '$day'}, 'station_count': {'$addToSet': '$station_name'}}},
+						{'$addFields': {'num_stations': {'$size': '$station_count'}}},
+						{'$match': {'num_stations': len(ocean_stations)}},
+						{'$sort': {'_id.year': -1, '_id.month': -1, '_id.day': -1}},
+						{'$limit': 1},
+					]
+
+					result = list(collection.aggregate(pipeline))
+
+					if result:
+						date_info = result[0]['_id']
+						ocean_date_str = f'{date_info["year"]}-{date_info["month"]:02d}-{date_info["day"]:02d}'
+
+						# Get data for all ocean stations on this date
+						ocean_data = list(
+							collection.find(
+								{
+									'station_name': {'$in': ocean_stations},
+									'year': date_info['year'],
+									'month': date_info['month'],
+									'day': date_info['day'],
+								}
+							).sort('station_name', 1)
+						)
+
+						if ocean_data:
+							df_ocean = pd.DataFrame(ocean_data)
+							st.info(f'Showing data from **{ocean_date_str}** (most recent complete date for this selection)')
+							display_metric_ranges_stats(df_ocean, title_suffix=f'Range across {len(ocean_data)} stations')
+						else:
+							st.warning(f'No data found on {ocean_date_str}.')
+					else:
+						st.warning(f'No common date found where all selected stations have data.')
+				else:
+					st.warning('No stations found for the selected ocean.')
 
 	except Exception as e:
 		st.error(f'Dashboard error: {e}')

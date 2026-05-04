@@ -242,3 +242,246 @@ def get_data_summary():
 		newest_str = 'N/A'
 
 	return {'total_records': total_records, 'unique_stations': unique_stations, 'oldest_record': oldest_str, 'newest_record': newest_str}
+
+
+def get_most_recent_common_date():
+	"""
+	Find the most recent date where all stations have at least one measurement.
+	Returns the most recent day that has complete coverage across all stations.
+
+	Returns:
+	    dict: Contains 'year', 'month', 'day', 'date_str' or None if not enough data
+	"""
+	collection = get_collection()
+	stations_collection = get_collection(STATIONS_COLLECTION)
+
+	# Get all unique stations
+	unique_stations = stations_collection.count_documents({})
+	if unique_stations == 0:
+		return None
+
+	# Get all unique dates with their station counts, sorted by date descending
+	pipeline = [
+		{'$match': {'year': {'$exists': True}, 'month': {'$exists': True}, 'day': {'$exists': True}}},
+		{'$group': {'_id': {'year': '$year', 'month': '$month', 'day': '$day'}, 'station_count': {'$addToSet': '$station_name'}}},
+		{'$addFields': {'num_stations': {'$size': '$station_count'}}},
+		{
+			'$match': {'num_stations': unique_stations}  # Only dates with all stations
+		},
+		{'$sort': {'_id.year': -1, '_id.month': -1, '_id.day': -1}},
+		{'$limit': 1},
+	]
+
+	result = list(collection.aggregate(pipeline))
+
+	if result:
+		date_info = result[0]['_id']
+		date_str = f'{date_info["year"]}-{date_info["month"]:02d}-{date_info["day"]:02d}'
+		return {'year': date_info['year'], 'month': date_info['month'], 'day': date_info['day'], 'date_str': date_str}
+
+	return None
+
+
+def get_data_for_date(year, month, day):
+	"""
+	Get all measurements for a specific date across all stations.
+
+	Args:
+	    year: Year
+	    month: Month (1-12)
+	    day: Day (1-31)
+
+	Returns:
+	    list: List of measurement documents for that date
+	"""
+	collection = get_collection()
+	return list(collection.find({'year': year, 'month': month, 'day': day}).sort('station_name', 1))
+
+
+def get_most_recent_data_for_station(station_name):
+	"""
+	Get the most recent measurement for a specific station.
+
+	Args:
+	    station_name: Name of the station
+
+	Returns:
+	    dict or None: Most recent measurement document
+	"""
+	collection = get_collection()
+	return collection.find_one({'station_name': station_name}, sort=[('year', -1), ('month', -1), ('day', -1)])
+
+
+def get_station_data_for_month(station_name, year, month):
+	"""
+	Get all measurements for a specific station in a given month.
+
+	Args:
+	    station_name: Name of the station
+	    year: Year
+	    month: Month (1-12)
+
+	Returns:
+	    list: List of measurement documents sorted by day
+	"""
+	collection = get_collection()
+	return list(
+		collection.find({'station_name': station_name, 'year': year, 'month': month}).sort([('day', 1)])
+	)
+
+
+def extract_region_from_station_name(station_name):
+	"""
+	Extract region from station name using common patterns.
+	Handles formats like: "AtlanticOcean_Caribbean_FlowerGardenBanks_*"
+
+	Args:
+	    station_name: Station name from the database
+
+	Returns:
+	    str: Region name or the original station name if region cannot be extracted
+	"""
+	# Handle common patterns
+	if 'AtlanticOcean_Caribbean' in station_name:
+		if 'FlowerGardenBanks' in station_name:
+			return 'Atlantic - Flower Garden Banks'
+		elif 'PuertoRico' in station_name:
+			return 'Atlantic - Puerto Rico'
+	elif 'florida' in station_name.lower():
+		return 'Florida Keys'
+	elif 'USVI' in station_name or 'usvi' in station_name.lower():
+		return 'US Virgin Islands'
+	elif 'samoa' in station_name.lower():
+		return 'Samoa'
+	elif 'guam' in station_name.lower():
+		return 'Guam'
+	elif 'rota' in station_name.lower():
+		return 'Rota'
+	elif 'saipan' in station_name.lower() or 'tinian' in station_name.lower():
+		return 'Saipan/Tinian'
+
+	# Extract from underscore-separated names
+	parts = station_name.split('_')
+	if len(parts) > 1:
+		return parts[0].replace('_', ' ')
+
+	return station_name
+
+
+def get_stations_by_region():
+	"""
+	Get all stations grouped by region.
+
+	Returns:
+	    dict: Dictionary with region names as keys and list of stations as values
+	"""
+	stations = get_all_stations()
+	regions = {}
+
+	for station in stations:
+		region = extract_region_from_station_name(station.get('station_name', 'Unknown'))
+		if region not in regions:
+			regions[region] = []
+		regions[region].append(station)
+
+	return regions
+
+
+def get_unique_oceans():
+	"""
+	Get all unique oceans from the station_mappings collection.
+
+	Returns:
+	    list: Sorted list of ocean names
+	"""
+	try:
+		collection = get_collection('station_mappings')
+		oceans = collection.distinct('ocean')
+		return sorted([o for o in oceans if o])
+	except Exception:
+		return []
+
+
+def get_unique_regions(ocean=None):
+	"""
+	Get all unique regions, optionally filtered by ocean.
+
+	Args:
+	    ocean: Optional ocean name to filter by
+
+	Returns:
+	    list: Sorted list of region names
+	"""
+	try:
+		collection = get_collection('station_mappings')
+		query = {}
+		if ocean:
+			query['ocean'] = ocean
+		regions = collection.distinct('region', query)
+		return sorted([r for r in regions if r])
+	except Exception:
+		return []
+
+
+def get_ocean_for_region(region):
+	"""
+	Get the ocean for a given region.
+
+	Args:
+	    region: Region name
+
+	Returns:
+	    str: Ocean name or None if not found
+	"""
+	try:
+		collection = get_collection('station_mappings')
+		result = collection.find_one({'region': region}, {'ocean': 1})
+		return result['ocean'] if result else None
+	except Exception:
+		return None
+
+
+def get_unique_subregions(ocean, region):
+	"""
+	Get all unique subregions for a given ocean and region.
+
+	Args:
+	    ocean: Ocean name
+	    region: Region name
+
+	Returns:
+	    list: Sorted list of subregion names (empty string if no subregion)
+	"""
+	try:
+		collection = get_collection('station_mappings')
+		subregions = collection.distinct('subregion', {'ocean': ocean, 'region': region})
+		# Filter out None and empty strings, keep them sorted
+		return sorted([s for s in subregions if s])
+	except Exception:
+		return []
+
+
+def get_stations_by_ocean_region(ocean, region=None, subregion=None):
+	"""
+	Get all station names for a given ocean, optionally filtered by region and subregion.
+
+	Args:
+	    ocean: Ocean name
+	    region: Optional region name
+	    subregion: Optional subregion name
+
+	Returns:
+	    list: List of station names
+	"""
+	try:
+		collection = get_collection('station_mappings')
+		query = {'ocean': ocean}
+		if region:
+			query['region'] = region
+		if subregion:
+			query['subregion'] = subregion
+
+		mappings = list(collection.find(query).sort('station_name', 1))
+		return [m['station_name'] for m in mappings]
+	except Exception:
+		return []
