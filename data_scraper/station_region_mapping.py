@@ -12,6 +12,17 @@ sys.path.insert(0, str(Path(__file__).parent.parent / 'mongo'))
 from db_utils import get_mongo_client
 from station_assignments import STATION_ASSIGNMENTS
 
+# Mapping to convert subregion codes to human-readable names
+SUBREGION_MAPPING = {
+	'FlowerGardenBanks': 'Flower Garden Banks',
+	'GuamandCNMI': 'Guam and CNMI',
+	'PuertoRico': 'Puerto Rico',
+	'SamoanIslands': 'Samoan Islands',
+	'SoutheastFlorida': 'Southeast Florida',
+	'FloridaKeys': 'Florida Keys',
+	'VirginIslands': 'Virgin Islands',
+}
+
 
 def parse_structured_filename(filename):
 	"""
@@ -48,6 +59,13 @@ def parse_structured_filename(filename):
 		return {'ocean': ocean, 'region': region, 'subregion': subregion, 'filename_station': filename_station}
 
 	return None
+
+
+def normalize_subregion(subregion):
+	"""Convert subregion code to human-readable name using SUBREGION_MAPPING."""
+	if not subregion:
+		return None
+	return SUBREGION_MAPPING.get(subregion, subregion)
 
 
 def extract_station_mapping_from_csv(csv_path):
@@ -87,9 +105,10 @@ def extract_station_mapping_from_csv(csv_path):
 			if parsed:
 				mapping = {'station_name': station_name, 'ocean': parsed['ocean'], 'region': parsed['region']}
 
-				# Add subregion if it exists
-				if parsed['subregion']:
-					mapping['subregion'] = parsed['subregion']
+				# Add subregion if it exists (normalized)
+				normalized_subregion = normalize_subregion(parsed['subregion'])
+				if normalized_subregion:
+					mapping['subregion'] = normalized_subregion
 
 				mapping['filename'] = filename
 				mappings.append(mapping)
