@@ -325,9 +325,7 @@ def get_station_data_for_month(station_name, year, month):
 	    list: List of measurement documents sorted by day
 	"""
 	collection = get_collection()
-	return list(
-		collection.find({'station_name': station_name, 'year': year, 'month': month}).sort([('day', 1)])
-	)
+	return list(collection.find({'station_name': station_name, 'year': year, 'month': month}).sort([('day', 1)]))
 
 
 def extract_region_from_station_name(station_name):

@@ -151,18 +151,9 @@ if page == 'Home':
 
 				# Get available years and months for this station
 				collection = get_collection()
-				all_dates = list(
-					collection.find({'station_name': selected_station}, {'year': 1, 'month': 1}).distinct(
-						'year'
-					)
-				)
+				all_dates = list(collection.find({'station_name': selected_station}, {'year': 1, 'month': 1}).distinct('year'))
 				available_years = sorted(
-					set(
-						doc.get('year')
-						for doc in collection.find({'station_name': selected_station}, {'year': 1})
-						if doc.get('year')
-					),
-					reverse=True,
+					set(doc.get('year') for doc in collection.find({'station_name': selected_station}, {'year': 1}) if doc.get('year')), reverse=True
 				)
 
 				if available_years:
@@ -189,18 +180,13 @@ if page == 'Home':
 						default_year_idx = 0
 						if 2026 in available_years:
 							default_year_idx = available_years.index(2026)
-						selected_year = st.selectbox(
-							'Select year:', available_years, index=default_year_idx, key='station_year'
-						)
+						selected_year = st.selectbox('Select year:', available_years, index=default_year_idx, key='station_year')
 
 					# Get available months for selected year
 					available_months = sorted(
 						set(
 							doc.get('month')
-							for doc in collection.find(
-								{'station_name': selected_station, 'year': selected_year},
-								{'month': 1},
-							)
+							for doc in collection.find({'station_name': selected_station, 'year': selected_year}, {'month': 1})
 							if doc.get('month')
 						)
 					)
@@ -215,10 +201,7 @@ if page == 'Home':
 							default_month_idx = next(i for i, m in enumerate(month_options) if m[0] == 5)
 
 						selected_month_name = st.selectbox(
-							'Select month:',
-							[m[1] for m in month_options],
-							index=default_month_idx,
-							key='station_month',
+							'Select month:', [m[1] for m in month_options], index=default_month_idx, key='station_month'
 						)
 
 						# Get the numeric month value
@@ -234,31 +217,23 @@ if page == 'Home':
 						mappings_path = os.path.join(os.path.dirname(__file__), '..', 'data_scraper', 'station_mappings.csv')
 						station_mappings = pd.read_csv(mappings_path)
 						station_row = station_mappings[station_mappings['station_name'] == selected_station]
-						
+
 						# Build info text with station metadata
 						info_text = f'**{selected_station}** - {selected_year}-{selected_month:02d} ({len(month_data)} days of data)'
 						if not station_row.empty:
 							ocean = station_row.iloc[0]['ocean']
 							region = station_row.iloc[0]['region']
 							subregion = station_row.iloc[0]['subregion']
-							
+
 							info_text += f'\n**Ocean:** {ocean} | **Region:** {region}'
 							if pd.notna(subregion) and subregion.strip():
 								info_text += f' | **Subregion:** {subregion}'
-						
+
 						# Display info
 						st.info(info_text)
 
 						# Define metric columns to graph
-						metric_columns = [
-							'SST_MIN',
-							'SST_MAX',
-							'SST@90th_HS',
-							'SSTA@90th_HS',
-							'90th_HS>0',
-							'DHW_from_90th_HS>1',
-							'BAA_7day_max',
-						]
+						metric_columns = ['SST_MIN', 'SST_MAX', 'SST@90th_HS', 'SSTA@90th_HS', '90th_HS>0', 'DHW_from_90th_HS>1', 'BAA_7day_max']
 
 						# Filter to available metrics (only show if column exists AND has data)
 						available_metrics = []
@@ -272,10 +247,7 @@ if page == 'Home':
 						if available_metrics:
 							# Create a column for date string for x-axis
 							df_month['date'] = pd.to_datetime(
-								df_month[['year', 'month', 'day']].rename(
-									columns={'year': 'Year', 'month': 'Month', 'day': 'Day'}
-								),
-								errors='coerce',
+								df_month[['year', 'month', 'day']].rename(columns={'year': 'Year', 'month': 'Month', 'day': 'Day'}), errors='coerce'
 							)
 
 							# Calculate number of rows needed for 2-column layout
@@ -284,11 +256,7 @@ if page == 'Home':
 
 							# Create subplots (x-axis sync handled via matches below)
 							fig = make_subplots(
-								rows=num_rows,
-								cols=2,
-								subplot_titles=available_metrics,
-								vertical_spacing=0.12,
-								horizontal_spacing=0.1,
+								rows=num_rows, cols=2, subplot_titles=available_metrics, vertical_spacing=0.12, horizontal_spacing=0.1
 							)
 
 							# Add traces for each metric
@@ -377,7 +345,9 @@ if page == 'Home':
 
 					# If there are subregions, show dropdown; otherwise proceed with region
 					if subregions:
-						selected_subregion = st.selectbox('Select a subregion (optional):', ['All Subregions'] + subregions, key='region_tab_subregion')
+						selected_subregion = st.selectbox(
+							'Select a subregion (optional):', ['All Subregions'] + subregions, key='region_tab_subregion'
+						)
 						if selected_subregion == 'All Subregions':
 							# Get all stations for this region
 							region_stations = get_stations_by_ocean_region(ocean_for_region, selected_region)

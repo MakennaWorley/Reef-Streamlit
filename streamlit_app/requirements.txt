@@ -1,6 +1,7 @@
 # --- Frontend & UI ---
 streamlit
 streamlit-folium     # Highly recommended for displaying reef coordinates
+plotly               # Interactive charts and visualizations for dashboard
 
 # --- Web Scraping & Automation ---
 selenium             # Required for the dynamic NOAA map
