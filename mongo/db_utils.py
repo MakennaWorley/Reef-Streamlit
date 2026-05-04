@@ -312,6 +312,24 @@ def get_most_recent_data_for_station(station_name):
 	return collection.find_one({'station_name': station_name}, sort=[('year', -1), ('month', -1), ('day', -1)])
 
 
+def get_station_data_for_month(station_name, year, month):
+	"""
+	Get all measurements for a specific station in a given month.
+
+	Args:
+	    station_name: Name of the station
+	    year: Year
+	    month: Month (1-12)
+
+	Returns:
+	    list: List of measurement documents sorted by day
+	"""
+	collection = get_collection()
+	return list(
+		collection.find({'station_name': station_name, 'year': year, 'month': month}).sort([('day', 1)])
+	)
+
+
 def extract_region_from_station_name(station_name):
 	"""
 	Extract region from station name using common patterns.
