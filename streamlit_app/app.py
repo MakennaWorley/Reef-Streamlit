@@ -137,6 +137,79 @@ if page == 'Home':
 				# Display station table
 				if not stations_df.empty:
 					st.dataframe(stations_df, use_container_width=True, hide_index=True)
+
+					# 3D Globe visualization
+					st.subheader('Station Locations - 3D Globe')
+
+					# Load region info and merge into stations_df
+					mappings_path_globe = os.path.join(os.path.dirname(__file__), '..', 'data_scraper', 'station_mappings.csv')
+					station_mappings_globe = pd.read_csv(mappings_path_globe)[['station_name', 'region']]
+					globe_df = stations_df.dropna(subset=['Latitude', 'Longitude']).merge(
+						station_mappings_globe, left_on='Station', right_on='station_name', how='left'
+					)
+					globe_df['region'] = globe_df['region'].fillna('Unknown')
+
+					# Assign a distinct color to each region
+					import plotly.colors as pc
+
+					region_list = sorted(globe_df['region'].unique())
+					color_seq = pc.qualitative.Light24
+					region_colors = {r: color_seq[i % len(color_seq)] for i, r in enumerate(region_list)}
+
+					fig_globe = go.Figure()
+					for region_name in region_list:
+						rdf = globe_df[globe_df['region'] == region_name]
+						fig_globe.add_trace(
+							go.Scattergeo(
+								lat=rdf['Latitude'],
+								lon=rdf['Longitude'],
+								text=rdf['Station'],
+								customdata=rdf['Datapoints'],
+								name=region_name,
+								mode='markers',
+								marker=dict(
+									size=6,
+									color=region_colors[region_name],
+									opacity=0.9,
+									line=dict(width=0.8, color='white'),
+								),
+								hovertemplate='<b>%{text}</b><br>Region: '
+								+ region_name
+								+ '<br>Lat: %{lat:.3f}<br>Lon: %{lon:.3f}<br>Datapoints: %{customdata:,}<extra></extra>',
+							)
+						)
+					fig_globe.update_layout(
+						geo=dict(
+							projection_type='orthographic',
+							showland=True,
+							landcolor='rgb(210, 230, 200)',
+							showocean=True,
+							oceancolor='rgb(50, 120, 200)',
+							showlakes=True,
+							lakecolor='rgb(80, 150, 220)',
+							showrivers=False,
+							showcountries=True,
+							countrycolor='rgb(160, 160, 160)',
+							countrywidth=0.5,
+							showcoastlines=True,
+							coastlinecolor='rgb(80, 80, 80)',
+							coastlinewidth=0.8,
+							bgcolor='rgba(0,0,0,0)',
+							showframe=False,
+							projection=dict(rotation=dict(lon=0, lat=20, roll=0)),
+						),
+						legend=dict(
+							title='Region',
+							bgcolor='rgba(0,0,0,0.85)',
+							bordercolor='rgba(0,0,0,0.2)',
+							borderwidth=1,
+							itemsizing='constant',
+						),
+						height=900,
+						margin=dict(t=10, b=10, l=10, r=10),
+						paper_bgcolor='rgba(0,0,0,0)',
+					)
+					st.plotly_chart(fig_globe, use_container_width=True)
 			else:
 				st.warning('No stations found in database.')
 
