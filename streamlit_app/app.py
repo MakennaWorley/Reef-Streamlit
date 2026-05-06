@@ -137,79 +137,6 @@ if page == 'Home':
 				# Display station table
 				if not stations_df.empty:
 					st.dataframe(stations_df, use_container_width=True, hide_index=True)
-
-					# 3D Globe visualization
-					st.subheader('Station Locations - 3D Globe')
-
-					# Load region info and merge into stations_df
-					mappings_path_globe = os.path.join(os.path.dirname(__file__), '..', 'data_scraper', 'station_mappings.csv')
-					station_mappings_globe = pd.read_csv(mappings_path_globe)[['station_name', 'region']]
-					globe_df = stations_df.dropna(subset=['Latitude', 'Longitude']).merge(
-						station_mappings_globe, left_on='Station', right_on='station_name', how='left'
-					)
-					globe_df['region'] = globe_df['region'].fillna('Unknown')
-
-					# Assign a distinct color to each region
-					import plotly.colors as pc
-
-					region_list = sorted(globe_df['region'].unique())
-					color_seq = pc.qualitative.Light24
-					region_colors = {r: color_seq[i % len(color_seq)] for i, r in enumerate(region_list)}
-
-					fig_globe = go.Figure()
-					for region_name in region_list:
-						rdf = globe_df[globe_df['region'] == region_name]
-						fig_globe.add_trace(
-							go.Scattergeo(
-								lat=rdf['Latitude'],
-								lon=rdf['Longitude'],
-								text=rdf['Station'],
-								customdata=rdf['Datapoints'],
-								name=region_name,
-								mode='markers',
-								marker=dict(
-									size=6,
-									color=region_colors[region_name],
-									opacity=0.9,
-									line=dict(width=0.8, color='white'),
-								),
-								hovertemplate='<b>%{text}</b><br>Region: '
-								+ region_name
-								+ '<br>Lat: %{lat:.3f}<br>Lon: %{lon:.3f}<br>Datapoints: %{customdata:,}<extra></extra>',
-							)
-						)
-					fig_globe.update_layout(
-						geo=dict(
-							projection_type='orthographic',
-							showland=True,
-							landcolor='rgb(210, 230, 200)',
-							showocean=True,
-							oceancolor='rgb(50, 120, 200)',
-							showlakes=True,
-							lakecolor='rgb(80, 150, 220)',
-							showrivers=False,
-							showcountries=True,
-							countrycolor='rgb(160, 160, 160)',
-							countrywidth=0.5,
-							showcoastlines=True,
-							coastlinecolor='rgb(80, 80, 80)',
-							coastlinewidth=0.8,
-							bgcolor='rgba(0,0,0,0)',
-							showframe=False,
-							projection=dict(rotation=dict(lon=0, lat=20, roll=0)),
-						),
-						legend=dict(
-							title='Region',
-							bgcolor='rgba(0,0,0,0.85)',
-							bordercolor='rgba(0,0,0,0.2)',
-							borderwidth=1,
-							itemsizing='constant',
-						),
-						height=900,
-						margin=dict(t=10, b=10, l=10, r=10),
-						paper_bgcolor='rgba(0,0,0,0)',
-					)
-					st.plotly_chart(fig_globe, use_container_width=True)
 			else:
 				st.warning('No stations found in database.')
 
@@ -220,7 +147,98 @@ if page == 'Home':
 
 			if stations:
 				station_names = sorted([s.get('station_name', 'Unknown') for s in stations])
-				selected_station = st.selectbox('Select a station:', station_names)
+
+				# --- Globe (click a dot to select that station) ---
+				st.markdown('**Click a station dot on the globe to select it below, or use the dropdown directly.**')
+				import plotly.colors as pc
+
+				tab_stations_df = pd.DataFrame(
+					[
+						{
+							'Station': s.get('station_name', 'Unknown'),
+							'Latitude': s.get('latitude'),
+							'Longitude': s.get('longitude'),
+						}
+						for s in stations
+					]
+				)
+				mappings_path_tab = os.path.join(os.path.dirname(__file__), '..', 'data_scraper', 'station_mappings.csv')
+				station_mappings_tab = pd.read_csv(mappings_path_tab)[['station_name', 'region']]
+				globe_tab_df = tab_stations_df.dropna(subset=['Latitude', 'Longitude']).merge(
+					station_mappings_tab, left_on='Station', right_on='station_name', how='left'
+				)
+				globe_tab_df['region'] = globe_tab_df['region'].fillna('Unknown')
+
+				region_list_tab = sorted(globe_tab_df['region'].unique())
+				color_seq_tab = pc.qualitative.Light24
+				region_colors_tab = {r: color_seq_tab[i % len(color_seq_tab)] for i, r in enumerate(region_list_tab)}
+
+				fig_globe_tab = go.Figure()
+				for region_name in region_list_tab:
+					rdf_tab = globe_tab_df[globe_tab_df['region'] == region_name]
+					fig_globe_tab.add_trace(
+						go.Scattergeo(
+							lat=rdf_tab['Latitude'],
+							lon=rdf_tab['Longitude'],
+							text=rdf_tab['Station'],
+						customdata=rdf_tab['Station'].tolist(),
+						name=region_name,
+						mode='markers',
+						marker=dict(
+							size=10,
+							color=region_colors_tab[region_name],
+							opacity=0.9,
+							line=dict(width=1, color='white'),
+						),
+						hovertemplate='<b>%{text}</b><br>Region: ' + region_name + '<br>Lat: %{lat:.3f}<br>Lon: %{lon:.3f}<br><i>Click to select</i><extra></extra>',
+						)
+					)
+				fig_globe_tab.update_layout(
+					clickmode='event+select',
+					uirevision='globe_tab',
+					geo=dict(
+						projection_type='orthographic',
+						showland=True,
+						landcolor='rgb(210, 230, 200)',
+						showocean=True,
+						oceancolor='rgb(50, 120, 200)',
+						showlakes=True,
+						lakecolor='rgb(80, 150, 220)',
+						showrivers=False,
+						showcountries=True,
+						countrycolor='rgb(160, 160, 160)',
+						countrywidth=0.5,
+						showcoastlines=True,
+						coastlinecolor='rgb(80, 80, 80)',
+						coastlinewidth=0.8,
+						bgcolor='rgba(0,0,0,0)',
+						showframe=False,
+						projection=dict(rotation=dict(lon=0, lat=20, roll=0)),
+					),
+					legend=dict(
+						title='Region',
+						bgcolor='rgba(0,0,0,0.85)',
+						bordercolor='rgba(0,0,0,0.2)',
+						borderwidth=1,
+						itemsizing='constant',
+					),
+					height=900,
+					margin=dict(t=10, b=10, l=10, r=10),
+					paper_bgcolor='rgba(0,0,0,0)',
+				)
+
+				globe_event = st.plotly_chart(fig_globe_tab, use_container_width=True, on_select='rerun', selection_mode='points', key='globe_tab_chart')
+				if globe_event and globe_event.selection and globe_event.selection.points:
+					pt = globe_event.selection.points[0]
+					# customdata is a list element when returned from Streamlit
+					raw = pt.get('customdata')
+					clicked_station = raw[0] if isinstance(raw, list) else (raw or pt.get('text'))
+					if clicked_station and clicked_station in station_names:
+						st.session_state['station_select'] = clicked_station
+
+				st.divider()
+
+				selected_station = st.selectbox('Select a station:', station_names, key='station_select')
 
 				# Get available years and months for this station
 				collection = get_collection()
