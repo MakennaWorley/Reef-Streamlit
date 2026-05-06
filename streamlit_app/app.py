@@ -147,7 +147,98 @@ if page == 'Home':
 
 			if stations:
 				station_names = sorted([s.get('station_name', 'Unknown') for s in stations])
-				selected_station = st.selectbox('Select a station:', station_names)
+
+				# --- Globe (click a dot to select that station) ---
+				st.markdown('**Click a station dot on the globe to select it below, or use the dropdown directly.**')
+				import plotly.colors as pc
+
+				tab_stations_df = pd.DataFrame(
+					[
+						{
+							'Station': s.get('station_name', 'Unknown'),
+							'Latitude': s.get('latitude'),
+							'Longitude': s.get('longitude'),
+						}
+						for s in stations
+					]
+				)
+				mappings_path_tab = os.path.join(os.path.dirname(__file__), '..', 'data_scraper', 'station_mappings.csv')
+				station_mappings_tab = pd.read_csv(mappings_path_tab)[['station_name', 'region']]
+				globe_tab_df = tab_stations_df.dropna(subset=['Latitude', 'Longitude']).merge(
+					station_mappings_tab, left_on='Station', right_on='station_name', how='left'
+				)
+				globe_tab_df['region'] = globe_tab_df['region'].fillna('Unknown')
+
+				region_list_tab = sorted(globe_tab_df['region'].unique())
+				color_seq_tab = pc.qualitative.Light24
+				region_colors_tab = {r: color_seq_tab[i % len(color_seq_tab)] for i, r in enumerate(region_list_tab)}
+
+				fig_globe_tab = go.Figure()
+				for region_name in region_list_tab:
+					rdf_tab = globe_tab_df[globe_tab_df['region'] == region_name]
+					fig_globe_tab.add_trace(
+						go.Scattergeo(
+							lat=rdf_tab['Latitude'],
+							lon=rdf_tab['Longitude'],
+							text=rdf_tab['Station'],
+						customdata=rdf_tab['Station'].tolist(),
+						name=region_name,
+						mode='markers',
+						marker=dict(
+							size=10,
+							color=region_colors_tab[region_name],
+							opacity=0.9,
+							line=dict(width=1, color='white'),
+						),
+						hovertemplate='<b>%{text}</b><br>Region: ' + region_name + '<br>Lat: %{lat:.3f}<br>Lon: %{lon:.3f}<br><i>Click to select</i><extra></extra>',
+						)
+					)
+				fig_globe_tab.update_layout(
+					clickmode='event+select',
+					uirevision='globe_tab',
+					geo=dict(
+						projection_type='orthographic',
+						showland=True,
+						landcolor='rgb(210, 230, 200)',
+						showocean=True,
+						oceancolor='rgb(50, 120, 200)',
+						showlakes=True,
+						lakecolor='rgb(80, 150, 220)',
+						showrivers=False,
+						showcountries=True,
+						countrycolor='rgb(160, 160, 160)',
+						countrywidth=0.5,
+						showcoastlines=True,
+						coastlinecolor='rgb(80, 80, 80)',
+						coastlinewidth=0.8,
+						bgcolor='rgba(0,0,0,0)',
+						showframe=False,
+						projection=dict(rotation=dict(lon=0, lat=20, roll=0)),
+					),
+					legend=dict(
+						title='Region',
+						bgcolor='rgba(0,0,0,0.85)',
+						bordercolor='rgba(0,0,0,0.2)',
+						borderwidth=1,
+						itemsizing='constant',
+					),
+					height=900,
+					margin=dict(t=10, b=10, l=10, r=10),
+					paper_bgcolor='rgba(0,0,0,0)',
+				)
+
+				globe_event = st.plotly_chart(fig_globe_tab, use_container_width=True, on_select='rerun', selection_mode='points', key='globe_tab_chart')
+				if globe_event and globe_event.selection and globe_event.selection.points:
+					pt = globe_event.selection.points[0]
+					# customdata is a list element when returned from Streamlit
+					raw = pt.get('customdata')
+					clicked_station = raw[0] if isinstance(raw, list) else (raw or pt.get('text'))
+					if clicked_station and clicked_station in station_names:
+						st.session_state['station_select'] = clicked_station
+
+				st.divider()
+
+				selected_station = st.selectbox('Select a station:', station_names, key='station_select')
 
 				# Get available years and months for this station
 				collection = get_collection()
@@ -245,76 +336,70 @@ if page == 'Home':
 									available_metrics.append(col)
 
 						if available_metrics:
+							from visualization_utils import METRIC_EXPLANATIONS
+
 							# Create a column for date string for x-axis
 							df_month['date'] = pd.to_datetime(
 								df_month[['year', 'month', 'day']].rename(columns={'year': 'Year', 'month': 'Month', 'day': 'Day'}), errors='coerce'
 							)
 
-							# Calculate number of rows needed for 2-column layout
+							# Render each metric with its title and help button above its own chart
 							num_metrics = len(available_metrics)
 							num_rows = (num_metrics + 1) // 2
 
-							# Create subplots (x-axis sync handled via matches below)
-							fig = make_subplots(
-								rows=num_rows, cols=2, subplot_titles=available_metrics, vertical_spacing=0.12, horizontal_spacing=0.1
-							)
+							metric_colors = {
+								'SST_MIN': '#636EFA',
+								'SST_MAX': '#EF553B',
+								'SST@90th_HS': '#00CC96',
+								'SSTA@90th_HS': '#AB63FA',
+								'90th_HS>0': '#FFA15A',
+								'DHW_from_90th_HS>1': '#19D3F3',
+								'BAA_7day_max': '#FF6692',
+							}
 
-							# Add traces for each metric
-							for idx, metric in enumerate(available_metrics):
-								row = (idx // 2) + 1
-								col = (idx % 2) + 1
+							# Note: bar chart colors (Min=#636EFA, Max=#EF553B, Mean=#00CC96) match
+							# SST_MIN, SST_MAX, and SST@90th_HS line colors above
 
-								# Convert to numeric, handling NaN
-								numeric_values = pd.to_numeric(df_month[metric], errors='coerce')
+							for row_idx in range(num_rows):
+								cols = st.columns(2)
+								for col_idx in range(2):
+									metric_idx = row_idx * 2 + col_idx
+									if metric_idx < num_metrics:
+										metric = available_metrics[metric_idx]
+										color = metric_colors.get(metric, '#636EFA')
+										with cols[col_idx]:
+											# Title and help button above the chart
+											title_col1, title_col2 = st.columns([0.9, 0.1])
+											with title_col1:
+												st.subheader(metric)
+											with title_col2:
+												if metric in METRIC_EXPLANATIONS:
+													with st.popover('❓'):
+														st.markdown(METRIC_EXPLANATIONS[metric])
 
-								fig.add_trace(
-									go.Scatter(
-										x=df_month['date'],
-										y=numeric_values,
-										mode='lines+markers',
-										name=metric,
-										line=dict(width=2),
-										hovertemplate='<b>' + metric + '</b><br>Date: %{x|%Y-%m-%d}<br>Value: %{y}<extra></extra>',
-									),
-									row=row,
-									col=col,
-								)
-
-								# Update y-axis label for each subplot
-								fig.update_yaxes(title_text='Value', row=row, col=col)
-
-							# Update layout
-							fig.update_layout(
-								height=350 * num_rows,
-								showlegend=False,
-								hovermode='x unified',
-								title_text=f'<b>{selected_station}</b> - {selected_year}-{selected_month:02d}',
-								title_x=0.5,
-							)
-
-							# Link all x-axes to the first subplot so zooming any graph syncs all
-							for row in range(1, num_rows + 1):
-								for col_idx in range(1, 3):
-									if not (row == 1 and col_idx == 1):
-										fig.update_xaxes(matches='x', row=row, col=col_idx)
-
-							# Hide tick labels on non-bottom rows for cleaner display
-							for row in range(1, num_rows):
-								fig.update_xaxes(showticklabels=False, row=row, col=1)
-								fig.update_xaxes(showticklabels=False, row=row, col=2)
-
-							# Update x-axis label for bottom plots
-							fig.update_xaxes(title_text='Date', row=num_rows, col=1)
-							if num_metrics % 2 == 1:
-								fig.update_xaxes(title_text='Date', row=num_rows, col=2)
-
-							# Prevent y-axis from being zoomed: when the linked x-axis resets
-							# (e.g. double-click on another graph), the y-axis range could get
-							# stuck at the previously zoomed position, making the line appear at
-							# the wrong height. fixedrange=True keeps y always at full autorange.
-							fig.update_yaxes(fixedrange=True)
-
-							st.plotly_chart(fig, use_container_width=True)
+											# Individual chart for this metric
+											numeric_values = pd.to_numeric(df_month[metric], errors='coerce')
+											fig = go.Figure()
+											fig.add_trace(
+												go.Scatter(
+													x=df_month['date'],
+													y=numeric_values,
+													mode='lines+markers',
+													name=metric,
+													line=dict(width=2, color=color),
+													marker=dict(color=color),
+													hovertemplate='<b>' + metric + '</b><br>Date: %{x|%Y-%m-%d}<br>Value: %{y}<extra></extra>',
+												)
+											)
+											fig.update_layout(
+												height=300,
+												showlegend=False,
+												hovermode='x unified',
+												xaxis_title='Date',
+												yaxis_title='Value',
+												margin=dict(t=10, b=40),
+											)
+											st.plotly_chart(fig, use_container_width=True)
 						else:
 							st.warning('No metric data available for this period.')
 					else:
